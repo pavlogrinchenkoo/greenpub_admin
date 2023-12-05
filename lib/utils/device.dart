@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:delivery/generated/l10n.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:korsun/generated/l10n.dart';
 
 Locale appLocale() {
   if (kIsWeb) {

@@ -1,9 +1,9 @@
-abstract class State {}
+abstract class SplashState {}
 
-class EmptyState extends State {}
+class EmptyState extends SplashState {}
 
-class LoadingState extends State {}
+class LoadingState extends SplashState {}
 
-class LoadedState extends State {}
+class LoadedState extends SplashState {}
 
-class ErrorState extends State {}
+class ErrorState extends SplashState {}

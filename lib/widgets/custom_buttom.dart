@@ -1,5 +1,6 @@
+import 'package:delivery/style.dart';
 import 'package:flutter/material.dart';
-import 'package:korsun/style.dart';
+
 
 class CustomButton extends StatelessWidget {
   const CustomButton({this.icon, this.onTap, super.key});

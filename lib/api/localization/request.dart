@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:korsun/api/localization/dto.dart';
+import 'package:delivery/api/localization/dto.dart';
+
 
 class LocalizationRequest {
   CollectionReference localization =

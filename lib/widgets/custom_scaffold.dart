@@ -1,5 +1,5 @@
+import 'package:delivery/generated/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:korsun/generated/assets.gen.dart';
 
 
 class CustomScaffold extends StatelessWidget {

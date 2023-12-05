@@ -1,7 +1,7 @@
+import 'package:delivery/api/localization/dto.dart';
+import 'package:delivery/api/localization/request.dart';
+import 'package:delivery/utils/device.dart';
 import 'package:flutter/material.dart';
-import 'package:korsun/api/localization/dto.dart';
-import 'package:korsun/api/localization/request.dart';
-import 'package:korsun/utils/device.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageService extends ChangeNotifier {

@@ -1,13 +1,19 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:delivery/routers/routes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:korsun/screens/splash_page/bloc/state.dart';
+import 'state.dart';
 
-class FavoritCubit extends Cubit<State> {
-  FavoritCubit() : super(EmptyState());
+class SplashCubit extends Cubit<SplashState> {
+  SplashCubit() : super(EmptyState());
 
-  Future<void> getFavorites() async {
+  Future<void> init(BuildContext context) async {
     try {
       emit(LoadingState());
       emit(LoadedState());
+      if(context.mounted) {
+        context.router.replaceAll([const LoginRoute()]);
+      }
     } catch (e) {
       emit(ErrorState());
     }
