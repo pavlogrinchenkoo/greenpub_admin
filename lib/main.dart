@@ -1,16 +1,34 @@
+import 'package:delivery/api/firestore_category/request.dart';
+import 'package:delivery/api/firestore_orders/request.dart';
+import 'package:delivery/api/firestore_product/request.dart';
+import 'package:delivery/api/firestore_tags/request.dart';
+import 'package:delivery/api/firestore_user/request.dart';
+import 'package:delivery/firebase_options.dart';
+import 'package:delivery/screens/add_product_page/bloc/bloc.dart';
 import 'package:delivery/screens/auth/login_page/bloc/bloc.dart';
+import 'package:delivery/screens/categories_page/bloc/bloc.dart';
+import 'package:delivery/screens/order_page/bloc/bloc.dart';
+import 'package:delivery/screens/orders_page/bloc/bloc.dart';
+import 'package:delivery/screens/products_page/bloc/bloc.dart';
 import 'package:delivery/screens/splash_page/bloc/bloc.dart';
+import 'package:delivery/screens/tags_page/bloc/bloc.dart';
+import 'package:delivery/screens/user_page/bloc/bloc.dart';
+import 'package:delivery/screens/users_page/bloc/bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:provider/provider.dart';
-
 import 'generated/l10n.dart';
 import 'routers/routes.dart';
+import 'screens/product_page/bloc/bloc.dart';
 import 'style.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const App());
 }
 
@@ -23,6 +41,11 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final AppRouter _appRouter = AppRouter();
+  final FirestoreUserApi _firestoreApi = FirestoreUserApi();
+  final FirestoreOrdersApi _firestoreOrdersApi = FirestoreOrdersApi();
+  final FirestoreProductApi _firestoreProductApi = FirestoreProductApi();
+  final FirestoreCategoryApi _firestoreCategoryApi = FirestoreCategoryApi();
+  final FirestoreTagsApi _firestoreTagsApi = FirestoreTagsApi();
 
   @override
   Widget build(BuildContext buildContext) {
@@ -33,6 +56,35 @@ class _AppState extends State<App> {
           ),
           BlocProvider(
             create: (_) => LoginCubit(),
+          ),
+          BlocProvider(
+            create: (_) => UsersCubit(_firestoreApi),
+          ),
+          BlocProvider(
+            create: (_) => OrdersCubit(
+                _firestoreApi, _firestoreOrdersApi, _firestoreProductApi),
+          ),
+          BlocProvider(
+            create: (_) => UserCubit(_firestoreApi),
+          ),
+          BlocProvider(
+            create: (_) => OrderCubit(
+                _firestoreApi, _firestoreOrdersApi, _firestoreProductApi),
+          ),
+          BlocProvider(
+            create: (_) => ProductsCubit(_firestoreProductApi),
+          ),
+          BlocProvider(
+            create: (_) => ProductCubit(_firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi),
+          ),
+          BlocProvider(
+            create: (_) => AddProductCubit(_firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi),
+          ),
+          BlocProvider(
+            create: (_) => CategoryCubit(_firestoreCategoryApi),
+          ),
+          BlocProvider(
+            create: (_) => TagsCubit(_firestoreTagsApi),
           ),
         ],
         child: MaterialApp.router(
@@ -45,7 +97,7 @@ class _AppState extends State<App> {
           locale: const Locale('en'),
           themeMode: ThemeMode.light,
           theme: ThemeData(
-            scaffoldBackgroundColor: BC.white,
+            scaffoldBackgroundColor: BC.black,
             bottomSheetTheme:
                 const BottomSheetThemeData(backgroundColor: Colors.transparent),
           ),

@@ -19,9 +19,15 @@ class Space {
 
   static Widget get h32 => const _SpaceWidget(height: 32);
 
+  static Widget get h28 => const _SpaceWidget(height: 28);
+
+  static Widget get h26 => const _SpaceWidget(height: 26);
+
   static Widget get h16 => const _SpaceWidget(height: 16);
 
   static Widget get h8 => const _SpaceWidget(height: 8);
+
+  static Widget get h4 => const _SpaceWidget(height: 4);
 }
 
 class _SpaceWidget extends StatelessWidget {

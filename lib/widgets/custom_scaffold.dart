@@ -1,29 +1,26 @@
 import 'package:delivery/generated/assets.gen.dart';
+import 'package:delivery/style.dart';
 import 'package:flutter/material.dart';
 
 
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold(
-      {this.appBar, required this.body, this.bottomNavigationBar, super.key});
-
-  final PreferredSizeWidget? appBar;
+      {this.appBar, required this.body, this.bottomNavigationBar, this.floatingActionButton, super.key});
+  final Widget? floatingActionButton;
+  final Widget? appBar;
   final Widget body;
   final Widget? bottomNavigationBar;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar,
+      floatingActionButton: floatingActionButton,
+      backgroundColor: BC.beige,
+      // appBar: appBar,
       bottomNavigationBar: bottomNavigationBar,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: Assets.images.bg.image().image,
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SafeArea(child: body),
-      ),
+      body: SafeArea(child: Column(children: [
+        appBar ?? Container(),
+        Expanded(child: body)])),
     );
   }
 }

@@ -12,7 +12,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BRadius.r16,
-      color: BC.green,
+      color: BC.black,
       child: InkWell(
           borderRadius: BRadius.r16,
           onTap: onTap,
