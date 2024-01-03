@@ -6,8 +6,8 @@ class LoadingState extends OrdersState {}
 
 class LoadedState extends OrdersState {
   final List<OrderModel>? order;
-
-  LoadedState({this.order});
+  final OrderModel? selectedOrder;
+  LoadedState({this.order, this.selectedOrder});
 }
 
 class ErrorState extends OrdersState {}

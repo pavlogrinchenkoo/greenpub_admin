@@ -47,7 +47,7 @@ class OrderCubit extends Cubit<OrderState> {
     BuildContext context, {
     String? uuid,
     String? userId,
-    String? address,
+    Address? address,
     String? timeCreate,
   }) async {
     try {
@@ -80,7 +80,7 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   Future<void> delete(BuildContext context, String uuid) async {
-    items.removeWhere((element) => element.uuid == uuid);
+    items.removeWhere((element) => element.product?.uuid == uuid);
     emit(LoadedState(order: order));
   }
 
@@ -95,7 +95,7 @@ class OrderCubit extends Cubit<OrderState> {
   void sumPrice(double itemPrice, String uuid, int count) {
     print(itemPrice);
     price = price! + itemPrice;
-    items.where((element) => element.uuid == uuid).first.count = count;
+    items.where((element) => element.product?.uuid == uuid).first.count = count;
     emit(LoadedState(order: order));
   }
 

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:delivery/api/cache.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/routers/routes.dart';
@@ -9,8 +10,9 @@ import 'state.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {
   final FirestoreProductApi firestoreApi;
+  final Cache cache;
 
-  ProductsCubit(this.firestoreApi) : super(LoadingState());
+  ProductsCubit(this.firestoreApi, this.cache) : super(LoadingState());
 
   List<ProductModel> products = [];
   bool isLoadMoreTriggered = false;
@@ -25,11 +27,21 @@ class ProductsCubit extends Cubit<ProductsState> {
       print(products);
       this.products = products;
       count = products.length;
-      for (final product in products) {
-        final image = product.image;
-        final getImage = await firestoreApi.getImage(image ?? '');
-        images.add(getImage);
+      final cachedImages = await cache.getPhoto();
+      print(cachedImages?.length);
+      print((cachedImages?.length ?? 0) < products.length);
+      if (cachedImages == null ||
+          (cachedImages?.length ?? 0) < products.length) {
+        for (final product in products) {
+          final image = product.image;
+          final getImage = await firestoreApi.getImage(image ?? '');
+          images.add(getImage);
+        }
+        await cache.savePhoto(images);
+      } else {
+        images = cachedImages;
       }
+
       emit(LoadedState(products: products, images: images));
     } catch (e) {
       emit(ErrorState());

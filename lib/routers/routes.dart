@@ -5,6 +5,7 @@ import 'package:delivery/screens/categories_page/page.dart';
 import 'package:delivery/screens/order_page/page.dart';
 import 'package:delivery/screens/product_page/page.dart';
 import 'package:delivery/screens/products_page/page.dart';
+import 'package:delivery/screens/shares_page/page.dart';
 import 'package:delivery/screens/splash_page/page.dart';
 import 'package:delivery/screens/orders_page/page.dart';
 import 'package:delivery/screens/sidebar/sidebar.dart';
@@ -27,6 +28,7 @@ class AppRouter extends _$AppRouter {
       AutoRoute(path: 'products', page: ProductsRoute.page),
       AutoRoute(path: 'categories', page: CategoriesRoute.page),
       AutoRoute(path: 'tags', page: TagsRoute.page),
+      AutoRoute(path: 'shares', page: SharesRoute.page),
     ]),
     AutoRoute(path: '/user/:uid', page: UserRoute.page),
     AutoRoute(path: '/order/:uid', page: OrderRoute.page),

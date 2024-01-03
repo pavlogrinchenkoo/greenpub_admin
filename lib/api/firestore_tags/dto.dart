@@ -12,7 +12,7 @@ class TagModel {
        });
 
   factory TagModel.fromJson(Map<String, dynamic> json) =>
-      _$TegModelFromJson(json);
+      _$TagModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$TegModelToJson(this);
+  Map<String, dynamic> toJson() => _$TagModelToJson(this);
 }

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:auto_route/auto_route.dart';
+import 'package:delivery/api/cache.dart';
 import 'package:delivery/api/firestore_category/dto.dart';
 import 'package:delivery/api/firestore_category/request.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
@@ -18,9 +19,10 @@ class ProductCubit extends Cubit<ProductState> {
   final FirestoreProductApi firestoreApi;
   final FirestoreCategoryApi firestoreCategoryApi;
   final FirestoreTagsApi firestoreTagsApi;
+  final Cache cache;
 
-  ProductCubit(
-      this.firestoreApi, this.firestoreCategoryApi, this.firestoreTagsApi)
+  ProductCubit(this.firestoreApi, this.firestoreCategoryApi,
+      this.firestoreTagsApi, this.cache)
       : super(LoadingState());
 
   ProductModel? product;
@@ -49,6 +51,7 @@ class ProductCubit extends Cubit<ProductState> {
       category = product?.category;
       tags = product?.tags;
       print(category?.category);
+
       emit(LoadedState(
           product: product,
           image: image,
@@ -143,7 +146,7 @@ class ProductCubit extends Cubit<ProductState> {
           await firestoreApi.saveImage(pickedFile, product?.uuid ?? '');
       image = pickedFile;
       this.imagePath = imagePath;
-
+      cache.deletePhoto();
       emit(LoadedState(
           product: product,
           image: image,

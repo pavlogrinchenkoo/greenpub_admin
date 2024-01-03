@@ -54,13 +54,13 @@ class _OrderPageState extends State<OrderPage> {
         controllerTime.text = state.order?.timeCreate ?? '';
         controllerUuid.text = state.order?.uid ?? '';
         controllerUserUid.text = state.order?.userId ?? '';
-        controllerAddress.text = state.order?.address ?? '';
+        controllerAddress.text = state.order?.address?.address ?? '';
         final order = state.order;
         return CustomScaffold(
             appBar: CustomAppBar(
               text: 'Замовлення',
               // onTap: () => _bloc.goOrdersPage(context),
-              user: order?.address ?? '',
+              user: order?.address?.address ?? '',
             ),
             body: ListView(
               padding: const EdgeInsets.all(20),
@@ -180,7 +180,7 @@ class _OrderPageState extends State<OrderPage> {
                                     onTap: () =>
                                         _bloc.updateOrder(
                                           context,
-                                          address: controllerAddress.text,
+                                          // address: controllerAddress.text,
                                           timeCreate: controllerTime.text,
                                           uuid: controllerUuid.text,
                                           userId: controllerUserUid.text,
@@ -246,12 +246,12 @@ class _OrderPageState extends State<OrderPage> {
                                         children: [
                                           Row(
                                             children: [
-                                              Text(item?.name ?? ''),
+                                              Text(item?.product?.name ?? ''),
                                               const Spacer(),
                                               _CountItems(
                                                 count: item?.count ?? 0,
-                                                price: item?.price ?? 0,
-                                                uuid: item?.uuid ?? '',
+                                                price: item?.product?.price ?? 0,
+                                                uuid: item?.product?.uuid ?? '',
                                               )
                                             ],
                                           ),
@@ -259,12 +259,12 @@ class _OrderPageState extends State<OrderPage> {
                                           Row(
                                             children: [
                                               const Text('Ціна: '),
-                                              Text('${item?.price ?? '0'}'),
+                                              Text('${item?.product?.price ?? '0'}'),
                                               const Spacer(),
                                               InkWell(
                                                 onTap: () =>
                                                     _bloc.delete(
-                                                        context, item?.uuid ?? ''),
+                                                        context, item?.product?.uuid ?? ''),
                                                 child: const Icon(
                                                   Icons.delete,
                                                 ),

@@ -98,13 +98,14 @@ abstract class BDuration {
 abstract class BRadius {
   static BorderRadius get r50 => const BorderRadius.all(Radius.circular(50));
   static BorderRadius get r16 => const BorderRadius.all(Radius.circular(16));
+  static BorderRadius get r10 => const BorderRadius.all(Radius.circular(10));
   static BorderRadius get r4 => const BorderRadius.all(Radius.circular(4));
 }
 
 abstract class BShadow {
   static List<BoxShadow> get light => [
         BoxShadow(
-            color: BC.green.withOpacity(0.1),
+            color: BC.beige.withOpacity(0.1),
             blurRadius: 60,
             offset: const Offset(0, 2))
       ];

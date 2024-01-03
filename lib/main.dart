@@ -1,3 +1,4 @@
+import 'package:delivery/api/cache.dart';
 import 'package:delivery/api/firestore_category/request.dart';
 import 'package:delivery/api/firestore_orders/request.dart';
 import 'package:delivery/api/firestore_product/request.dart';
@@ -10,6 +11,7 @@ import 'package:delivery/screens/categories_page/bloc/bloc.dart';
 import 'package:delivery/screens/order_page/bloc/bloc.dart';
 import 'package:delivery/screens/orders_page/bloc/bloc.dart';
 import 'package:delivery/screens/products_page/bloc/bloc.dart';
+import 'package:delivery/screens/shares_page/bloc/bloc.dart';
 import 'package:delivery/screens/splash_page/bloc/bloc.dart';
 import 'package:delivery/screens/tags_page/bloc/bloc.dart';
 import 'package:delivery/screens/user_page/bloc/bloc.dart';
@@ -46,6 +48,7 @@ class _AppState extends State<App> {
   final FirestoreProductApi _firestoreProductApi = FirestoreProductApi();
   final FirestoreCategoryApi _firestoreCategoryApi = FirestoreCategoryApi();
   final FirestoreTagsApi _firestoreTagsApi = FirestoreTagsApi();
+  final Cache _cache = Cache();
 
   @override
   Widget build(BuildContext buildContext) {
@@ -72,10 +75,10 @@ class _AppState extends State<App> {
                 _firestoreApi, _firestoreOrdersApi, _firestoreProductApi),
           ),
           BlocProvider(
-            create: (_) => ProductsCubit(_firestoreProductApi),
+            create: (_) => ProductsCubit(_firestoreProductApi, _cache),
           ),
           BlocProvider(
-            create: (_) => ProductCubit(_firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi),
+            create: (_) => ProductCubit(_firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi, _cache),
           ),
           BlocProvider(
             create: (_) => AddProductCubit(_firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi),
@@ -85,6 +88,9 @@ class _AppState extends State<App> {
           ),
           BlocProvider(
             create: (_) => TagsCubit(_firestoreTagsApi),
+          ),
+          BlocProvider(
+            create: (_) => SharesCubit(),
           ),
         ],
         child: MaterialApp.router(
