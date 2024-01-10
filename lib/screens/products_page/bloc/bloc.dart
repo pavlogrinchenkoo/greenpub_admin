@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:delivery/api/cache.dart';
+import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/routers/routes.dart';
@@ -18,30 +19,42 @@ class ProductsCubit extends Cubit<ProductsState> {
   bool isLoadMoreTriggered = false;
   bool isAll = false;
   int count = 0;
-  List<Uint8List?> images = [];
+  List<ImageModel?> images = [];
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init(BuildContext context, bool isLoadMore) async {
+    products = [];
+    images = [];
+    count = 0;
+    isLoadMoreTriggered = false;
+    isAll = false;
+    // bool pathsMatch = true;
     try {
       emit(LoadingState());
-      final products = await firestoreApi.getProductsList(50);
+      final products = await firestoreApi.getProductsList(50, isLoadMore);
       print(products);
       this.products = products;
       count = products.length;
-      final cachedImages = await cache.getPhoto();
-      print(cachedImages?.length);
-      print((cachedImages?.length ?? 0) < products.length);
-      if (cachedImages == null ||
-          (cachedImages?.length ?? 0) < products.length) {
+      // final cachedImages = await cache.getPhoto();
+      // if (cachedImages?.length == products.length) {
+      //   for (int i = 0; i < (cachedImages?.length ?? 0); i++) {
+      //     if (cachedImages?[i].path != products[i].image) {
+      //       pathsMatch = false;
+      //       break;
+      //     }
+      //   }
+      // } else {
+      //   pathsMatch = false;
+      // }
+      // if (pathsMatch) {
+      //   images = cachedImages ?? [];
+      // } else {
         for (final product in products) {
           final image = product.image;
           final getImage = await firestoreApi.getImage(image ?? '');
           images.add(getImage);
         }
-        await cache.savePhoto(images);
-      } else {
-        images = cachedImages;
-      }
-
+        // await cache.savePhoto(images);
+      // }
       emit(LoadedState(products: products, images: images));
     } catch (e) {
       emit(ErrorState());
@@ -51,7 +64,7 @@ class ProductsCubit extends Cubit<ProductsState> {
   Future<void> getProducts() async {
     try {
       if (count >= 50) {
-        final products = await firestoreApi.getProductsList(50);
+        final products = await firestoreApi.getProductsList(50, false);
         this.products.addAll(products);
         for (final product in products) {
           final image = product.image;

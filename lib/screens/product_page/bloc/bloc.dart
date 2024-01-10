@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:delivery/api/cache.dart';
 import 'package:delivery/api/firestore_category/dto.dart';
 import 'package:delivery/api/firestore_category/request.dart';
+import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/api/firestore_tags/dto.dart';
@@ -26,7 +27,7 @@ class ProductCubit extends Cubit<ProductState> {
       : super(LoadingState());
 
   ProductModel? product;
-  Uint8List? image;
+  ImageModel? image;
   bool isPromo = false;
   List<TagModel>? tags = [];
   List<CategoryModel> categoryList = [];
@@ -121,7 +122,7 @@ class ProductCubit extends Cubit<ProductState> {
     if (context.mounted) {
       context.router
           .pop()
-          .whenComplete(() => context.read<ProductsCubit>().init(context));
+          .whenComplete(() => context.read<ProductsCubit>().init(context, true));
     }
   }
 
@@ -131,7 +132,7 @@ class ProductCubit extends Cubit<ProductState> {
       if (context.mounted) {
         context.router
             .pop()
-            .whenComplete(() => context.read<ProductsCubit>().init(context));
+            .whenComplete(() => context.read<ProductsCubit>().init(context, true));
       }
     } catch (e) {
       print('Error signing in anonymously: $e');
@@ -144,7 +145,10 @@ class ProductCubit extends Cubit<ProductState> {
       firestoreApi.deleteImage(product?.uuid ?? '');
       final imagePath =
           await firestoreApi.saveImage(pickedFile, product?.uuid ?? '');
-      image = pickedFile;
+      image = ImageModel(
+        bytes: pickedFile,
+        path: imagePath,
+      );
       this.imagePath = imagePath;
       cache.deletePhoto();
       emit(LoadedState(

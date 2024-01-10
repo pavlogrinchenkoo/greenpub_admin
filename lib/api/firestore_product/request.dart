@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
@@ -12,11 +13,13 @@ class FirestoreProductApi {
 
   QuerySnapshot? snapshot = null;
 
-  Future<List<ProductModel>> getProductsList(int limit) async {
+  Future<List<ProductModel>> getProductsList(int limit, bool isLoadMore) async {
+    if (isLoadMore) {
+      snapshot = null;
+    }
     try {
       if (snapshot?.docs.isNotEmpty == true) {
-        var lastVisible =
-            snapshot!.docs[snapshot!.docs.length - 1];
+        var lastVisible = snapshot!.docs[snapshot!.docs.length - 1];
         QuerySnapshot productSnapshot = await productCollection
             .orderBy('uuid')
             .startAfterDocument(lastVisible)
@@ -34,10 +37,8 @@ class FirestoreProductApi {
         print('product list: $productList');
         return productList;
       } else {
-        QuerySnapshot productSnapshot = await productCollection
-            .orderBy('uuid')
-            .limit(limit)
-            .get();
+        QuerySnapshot productSnapshot =
+            await productCollection.orderBy('uuid').limit(limit).get();
         snapshot = productSnapshot;
         List<ProductModel> productList = [];
 
@@ -64,8 +65,8 @@ class FirestoreProductApi {
 
       for (QueryDocumentSnapshot productsDoc in productsSnapshot.docs) {
         if (productsDoc.exists) {
-          final productsData = ProductModel.fromJson(
-              productsDoc.data() as Map<String, dynamic>);
+          final productsData =
+              ProductModel.fromJson(productsDoc.data() as Map<String, dynamic>);
           productsList.add(productsData);
         }
       }
@@ -94,7 +95,7 @@ class FirestoreProductApi {
     }
   }
 
-  Future<Uint8List?> getImage(String name) async {
+  Future<ImageModel?> getImage(String name) async {
     final Reference storageRef = FirebaseStorage.instance.ref();
     final imageRef = storageRef.child(name);
     try {
@@ -103,7 +104,11 @@ class FirestoreProductApi {
         List<int> imageBytes = image.toList();
         String base64Image = base64Encode(imageBytes);
       }
-      return image;
+      final imageModel = ImageModel(
+        bytes: image,
+        path: name,
+      );
+      return imageModel;
     } catch (e) {
       print("Помилка при отриманні даних з Firebase: $e");
       return null;

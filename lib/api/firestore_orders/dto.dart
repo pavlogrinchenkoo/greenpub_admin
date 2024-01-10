@@ -82,4 +82,18 @@ class ImageModel {
   final Uint8List? bytes;
 
   ImageModel({this.path, this.bytes});
+
+  factory ImageModel.fromJson(Map<String, dynamic> json) {
+    return ImageModel(
+      path: json['path'] as String?,
+      bytes: json['bytes'] != null ? Uint8List.fromList(List<int>.from(json['bytes'])) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'path': path,
+      'bytes': bytes?.toList(),
+    };
+  }
 }

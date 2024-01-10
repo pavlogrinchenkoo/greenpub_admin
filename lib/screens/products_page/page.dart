@@ -26,7 +26,7 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   void initState() {
     _bloc = context.read<ProductsCubit>();
-    _bloc.init(context);
+    _bloc.init(context, false);
     super.initState();
   }
 
@@ -71,7 +71,7 @@ class _ProductsPageState extends State<ProductsPage> {
                             final product = state.products?[index];
                             return _CustomContainer(
                               product: product,
-                              image: state.images?[index],
+                              image: state.images?[index]?.bytes,
                             );
                           })))
             ],

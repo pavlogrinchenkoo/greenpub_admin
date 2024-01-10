@@ -28,7 +28,7 @@ class ShowProductCubit extends Cubit<ShowProductState> {
   List<ItemProduct> selectedProducts = [];
   bool isLoadMoreTriggered = false;
   int count = 0;
-  List<Uint8List?> images = [];
+  List<ImageModel?> images = [];
 
   Future<void> init(BuildContext context) async {
     products = [];
@@ -46,7 +46,7 @@ class ShowProductCubit extends Cubit<ShowProductState> {
         final getImage = await firestoreApi.getImage(image ?? '');
         images.add(getImage);
       }
-      await cache.savePhoto(images);
+      // await cache.savePhoto(images);
       emit(LoadedState(
         products: products,
         images: images,
@@ -61,7 +61,7 @@ class ShowProductCubit extends Cubit<ShowProductState> {
   Future<void> getProducts() async {
     try {
       if (count >= 50) {
-        final products = await firestoreApi.getProductsList(50);
+        final products = await firestoreApi.getProductsList(50, false);
         this.products.addAll(products);
         for (final product in products) {
           final image = product.image;

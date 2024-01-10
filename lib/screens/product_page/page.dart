@@ -109,7 +109,7 @@ class _ProductPageState extends State<ProductPage> {
                               : ClipRRect(
                                   borderRadius: BRadius.r16,
                                   child: Image.memory(
-                                    state.image ?? Uint8List(0),
+                                    state.image?.bytes ?? Uint8List(0),
                                     width: 400,
                                     height: 400,
                                     fit: BoxFit.cover,

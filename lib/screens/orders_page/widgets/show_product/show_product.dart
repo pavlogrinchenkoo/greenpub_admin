@@ -103,7 +103,7 @@ class _ShowProductState extends State<ShowProduct> {
                       final item = state.products?[index];
                       return _CustomItemProduct(
                         item: item,
-                        image: image,
+                        image: image?.bytes,
                       );
                     },
                   ),

@@ -83,10 +83,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     for (int i = 0, length = products.length; i < length; i++) {
       final getImage =
           await firestoreProductApi.getImage(products[i].product?.image ?? '');
-      images.add(ImageModel(
-        bytes: getImage,
-        path: products[i].product?.image ?? '',
-      ));
+      images.add(getImage);
     }
   }
 
@@ -292,10 +289,7 @@ class OrdersCubit extends Cubit<OrdersState> {
           orders[index].items?.add(product);
           final getImage =
               await firestoreProductApi.getImage(product.product?.image ?? '');
-          images.add(ImageModel(
-            bytes: getImage,
-            path: product.product?.image ?? '',
-          ));
+          images.add(getImage);
         }
         for (final product in products) {
           final sumPrice = product.count! * (product.product?.price ?? 0);

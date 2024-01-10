@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:html' as html;
+import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:flutter/services.dart';
 import 'dart:typed_data';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -8,14 +9,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Cache {
 
 
-  Future<void> savePhoto(List<Uint8List?> images) async {
-    final prefs = await SharedPreferences.getInstance();
-    final encodedDataList = images
-        .map((image) => image != null ? base64.encode(image) : "")
-        .toList();
-    prefs.remove('images');
-    print(images.length);
-    await prefs.setStringList('images', encodedDataList);
+  Future<void> savePhoto(List<ImageModel?> images) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final encodedDataList = jsonEncode(images);
+      prefs.remove('images');
+      print(images.length);
+      await prefs.setString('images', encodedDataList);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void deletePhoto() async {
@@ -23,21 +26,41 @@ class Cache {
     prefs.remove('images');
   }
 
-  Future<List<Uint8List>?> getPhoto() async {
-    final prefs = await SharedPreferences.getInstance();
-    final encodedDataList = prefs.getStringList('images');
+  Future<List<ImageModel>?> getPhoto() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final encodedDataList = prefs.getString('images');
 
-    if (encodedDataList != null && encodedDataList.isNotEmpty) {
-      final decodedDataList = encodedDataList
-          .map((encodedData) => base64.decode(encodedData))
-          .toList();
+      if (encodedDataList == null) {
+        return null;
+      }
 
-      print(decodedDataList.length);
+      final decodedDataList = jsonDecode(encodedDataList);
 
-      return decodedDataList.isNotEmpty ? decodedDataList : null;
-    } else {
+      if (decodedDataList is List) {
+        final List<ImageModel> images = decodedDataList
+            .map((data) => ImageModel.fromJson(data as Map<String, dynamic>))
+            .toList();
+
+        return images.isNotEmpty ? images : null;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e);
       return null;
     }
+    // if (encodedDataList != null && encodedDataList.isNotEmpty) {
+    //   final decodedDataList = encodedDataList
+    //       .map((encodedData) => base64.decode(encodedData))
+    //       .toList();
+    //
+    //   print(decodedDataList.length);
+    //
+    //   return decodedDataList.isNotEmpty ? decodedDataList : null;
+    // } else {
+    //   return null;
+    // }
   }
 
 // void saveImages(List<Uint8List?> dataList) {

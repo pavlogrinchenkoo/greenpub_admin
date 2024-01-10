@@ -1,4 +1,5 @@
 import 'package:delivery/api/firestore_category/dto.dart';
+import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_tags/dto.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +10,7 @@ class LoadingState extends ProductState {}
 
 class LoadedState extends ProductState {
   final ProductModel? product;
-  final Uint8List? image;
+  final ImageModel? image;
   final String? imagePath;
   final List<CategoryModel>? categoryList;
   final List<TagModel>? tagsList;

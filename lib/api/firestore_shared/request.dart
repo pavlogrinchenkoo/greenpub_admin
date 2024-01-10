@@ -10,7 +10,7 @@ import 'dto.dart';
 class SharedApi {
   final uuid = Uuid();
   CollectionReference sharesCollection =
-      FirebaseFirestore.instance.collection('shares');
+      FirebaseFirestore.instance.collection('promo');
 
   Future<List<SharesModel>> getSharesList() async {
     try {
