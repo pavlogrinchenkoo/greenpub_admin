@@ -57,6 +57,26 @@ class FirestoreProductApi {
     }
   }
 
+  Future<List<ProductModel>> getProducts() async {
+    try {
+      QuerySnapshot productsSnapshot = await productCollection.get();
+      List<ProductModel> productsList = [];
+
+      for (QueryDocumentSnapshot productsDoc in productsSnapshot.docs) {
+        if (productsDoc.exists) {
+          final productsData = ProductModel.fromJson(
+              productsDoc.data() as Map<String, dynamic>);
+          productsList.add(productsData);
+        }
+      }
+      print('products list: $productsList');
+      return productsList;
+    } catch (e) {
+      print('Error getting products list: $e');
+      return [];
+    }
+  }
+
   Future<ProductModel?> getProductData(String uid) async {
     try {
       DocumentSnapshot productDoc = await productCollection.doc(uid).get();

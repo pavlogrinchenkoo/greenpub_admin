@@ -10,11 +10,12 @@ class FirestoreOrdersApi {
   QuerySnapshot? snapshot = null;
 
   Future<List<OrderModel>> getOrdersList(int limit) async {
+    final time = DateTime.now();
     try {
       if (snapshot?.docs.isNotEmpty == true) {
         var lastVisible =
         snapshot!.docs[snapshot!.docs.length - 1];
-      QuerySnapshot ordersSnapshot = await orderCollection.startAfterDocument(lastVisible).limit(limit).get();
+      QuerySnapshot ordersSnapshot = await orderCollection.orderBy('timeCreate').startAt([time]).endAt([0]).startAfterDocument(lastVisible).limit(limit).get();
       List<OrderModel> orderList = [];
 
       for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {
@@ -77,6 +78,17 @@ class FirestoreOrdersApi {
     try {
       DocumentReference orderDoc = orderCollection.doc(uuid);
       final order = jsonDecode(jsonEncode(orderModel.toJson()));
+      await orderDoc.update(order);
+      print('User ID: $uuid');
+    } catch (e) {
+      print('Error signing in anonymously: $e');
+    }
+  }
+
+  Future<void> editStatus(String uuid, String status) async {
+    try {
+      DocumentReference orderDoc = orderCollection.doc(uuid);
+      final order = jsonDecode(jsonEncode({"statusType": status}));
       await orderDoc.update(order);
       print('User ID: $uuid');
     } catch (e) {

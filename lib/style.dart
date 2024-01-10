@@ -92,6 +92,7 @@ abstract class BS {
 }
 
 abstract class BDuration {
+  static Duration get d500 => const Duration(milliseconds: 500);
   static Duration get d200 => const Duration(milliseconds: 200);
 }
 

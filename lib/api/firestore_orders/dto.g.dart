@@ -23,6 +23,7 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) => OrderModel(
       discount: (json['discount'] as num?)?.toDouble(),
       totalPrice: (json['totalPrice'] as num?)?.toDouble(),
       comment: json['comment'] as String?,
+      spentPoints: json['spentPoints'] as int?,
     );
 
 Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
@@ -30,15 +31,16 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
       'uid': instance.uid,
       'userId': instance.userId,
       'items': instance.items,
-      'price': instance.price,
       'address': instance.address,
       'payType': instance.payType,
       'deliveryType': instance.deliveryType,
       'statusType': instance.statusType,
       'timeCreate': instance.timeCreate,
+      'price': instance.price,
       'discount': instance.discount,
       'totalPrice': instance.totalPrice,
       'comment': instance.comment,
+      'spentPoints': instance.spentPoints,
     };
 
 ItemProduct _$ItemProductFromJson(Map<String, dynamic> json) => ItemProduct(

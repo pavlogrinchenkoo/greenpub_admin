@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({this.icon, this.onTap, super.key});
-
+  const CustomButton({this.icon, this.onTap, super.key, this.color});
+  final Color? color;
   final Widget? icon;
   final void Function()? onTap;
 
@@ -12,7 +12,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BRadius.r16,
-      color: BC.black,
+      color: (color == null) ? BC.black : color,
       child: InkWell(
           borderRadius: BRadius.r16,
           onTap: onTap,

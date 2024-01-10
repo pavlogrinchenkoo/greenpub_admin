@@ -9,29 +9,31 @@ class OrderModel {
   final String? uid;
   final String? userId;
   final List<ItemProduct>? items;
-  final double? price;
   final Address? address;
   final String? payType;
   final String? deliveryType;
   final String? statusType;
   final String? timeCreate;
-  final double? discount;
-  final double? totalPrice;
+  double? price;
+  double? discount;
+  double? totalPrice;
   final String? comment;
+  final int? spentPoints;
 
   OrderModel(
       {this.uid,
-        this.userId,
-        this.items,
-        this.price,
-        this.address,
-        this.payType,
-        this.deliveryType,
-        this.statusType,
-        this.timeCreate,
-        this.discount,
-        this.totalPrice,
-        this.comment});
+      this.userId,
+      this.items,
+      this.price,
+      this.address,
+      this.payType,
+      this.deliveryType,
+      this.statusType,
+      this.timeCreate,
+      this.discount,
+      this.totalPrice,
+      this.comment,
+      this.spentPoints});
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>
       _$OrderModelFromJson(json);
@@ -60,7 +62,14 @@ class Address {
   final String? entrance;
   final String? floor;
   final String? nameAddress;
-  Address({this.address, this.apartment, this.code, this.entrance, this.floor, this.nameAddress});
+
+  Address(
+      {this.address,
+      this.apartment,
+      this.code,
+      this.entrance,
+      this.floor,
+      this.nameAddress});
 
   factory Address.fromJson(Map<String, dynamic> json) =>
       _$AddressFromJson(json);

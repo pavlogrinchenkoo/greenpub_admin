@@ -2,6 +2,7 @@ import 'package:delivery/api/cache.dart';
 import 'package:delivery/api/firestore_category/request.dart';
 import 'package:delivery/api/firestore_orders/request.dart';
 import 'package:delivery/api/firestore_product/request.dart';
+import 'package:delivery/api/firestore_shared/request.dart';
 import 'package:delivery/api/firestore_tags/request.dart';
 import 'package:delivery/api/firestore_user/request.dart';
 import 'package:delivery/firebase_options.dart';
@@ -23,6 +24,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'generated/l10n.dart';
 import 'routers/routes.dart';
+import 'screens/orders_page/widgets/show_product/bloc/bloc.dart';
 import 'screens/product_page/bloc/bloc.dart';
 import 'style.dart';
 
@@ -48,6 +50,7 @@ class _AppState extends State<App> {
   final FirestoreProductApi _firestoreProductApi = FirestoreProductApi();
   final FirestoreCategoryApi _firestoreCategoryApi = FirestoreCategoryApi();
   final FirestoreTagsApi _firestoreTagsApi = FirestoreTagsApi();
+  final SharedApi _sharedApi = SharedApi();
   final Cache _cache = Cache();
 
   @override
@@ -78,10 +81,12 @@ class _AppState extends State<App> {
             create: (_) => ProductsCubit(_firestoreProductApi, _cache),
           ),
           BlocProvider(
-            create: (_) => ProductCubit(_firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi, _cache),
+            create: (_) => ProductCubit(_firestoreProductApi,
+                _firestoreCategoryApi, _firestoreTagsApi, _cache),
           ),
           BlocProvider(
-            create: (_) => AddProductCubit(_firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi),
+            create: (_) => AddProductCubit(
+                _firestoreProductApi, _firestoreCategoryApi, _firestoreTagsApi),
           ),
           BlocProvider(
             create: (_) => CategoryCubit(_firestoreCategoryApi),
@@ -90,7 +95,11 @@ class _AppState extends State<App> {
             create: (_) => TagsCubit(_firestoreTagsApi),
           ),
           BlocProvider(
-            create: (_) => SharesCubit(),
+            create: (_) => SharesCubit(_sharedApi),
+          ),
+          BlocProvider(
+            create: (_) => ShowProductCubit(
+                _firestoreProductApi, _firestoreOrdersApi, _firestoreApi, _cache),
           ),
         ],
         child: MaterialApp.router(
