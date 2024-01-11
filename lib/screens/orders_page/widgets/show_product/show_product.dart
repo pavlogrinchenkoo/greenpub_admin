@@ -68,7 +68,7 @@ class _ShowProductState extends State<ShowProduct> {
                       Space.w20,
                       Expanded(
                         child: TextField(
-                          onChanged: (value) {},
+                          onChanged: (value) => _bloc.searchProduct(value),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.search),
                             hintText: 'Пошук',

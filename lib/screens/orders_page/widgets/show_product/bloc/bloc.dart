@@ -25,10 +25,14 @@ class ShowProductCubit extends Cubit<ShowProductState> {
       : super(LoadingState());
 
   List<ProductModel> products = [];
+  List<ProductModel> searchProducts = [];
   List<ItemProduct> selectedProducts = [];
   bool isLoadMoreTriggered = false;
   int count = 0;
   List<ImageModel?> images = [];
+  List<ImageModel?> searchImages = [];
+  bool isSearch = false;
+
 
   Future<void> init(BuildContext context) async {
     products = [];
@@ -50,6 +54,44 @@ class ShowProductCubit extends Cubit<ShowProductState> {
       emit(LoadedState(
         products: products,
         images: images,
+      ));
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
+  Future<void> searchProduct(String query) async {
+    try {
+      // images = [];
+      // final products = await firestoreApi.searchProducts(query);
+      // this.products = products;
+      // count = products.length;
+      // for (final product in products) {
+      //   final image = product.image;
+      //   final getImage = await firestoreApi.getImage(image ?? '');
+      //   images.add(getImage);
+      // }
+      if(query.isEmpty) {
+        isSearch = false;
+      } else {
+        isSearch = true;
+      }
+      searchProducts = [];
+      searchImages = [];
+      searchProducts = products
+          .where((element) => element.name!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+      print(searchProducts);
+      if(searchProducts.isEmpty) {
+        searchProducts = products;
+      }
+      for(final product in searchProducts) {
+        final image = images.where((element) => element?.path == product.image).first;
+        searchImages.add(image);
+      }
+      emit(LoadedState(
+        products: searchProducts,
+        images: searchImages,
       ));
     } catch (e) {
       emit(ErrorState());
@@ -84,8 +126,8 @@ class ShowProductCubit extends Cubit<ShowProductState> {
       ),
     );
     emit(LoadedState(
-      products: products,
-      images: images,
+      products: isSearch ? searchProducts : products,
+      images: isSearch ? searchImages : images,
     ));
   }
 
@@ -102,8 +144,8 @@ class ShowProductCubit extends Cubit<ShowProductState> {
     print(
         'count: ${selectedProducts.where((element) => element.product?.uuid == productModel?.uuid).first.count}');
     emit(LoadedState(
-      products: products,
-      images: images,
+      products: isSearch ? searchProducts : products,
+      images: isSearch ? searchImages : images,
     ));
   }
 
@@ -121,8 +163,8 @@ class ShowProductCubit extends Cubit<ShowProductState> {
           .first
           .count = removeCount;
       emit(LoadedState(
-        products: products,
-        images: images,
+        products: isSearch ? searchProducts : products,
+        images: isSearch ? searchImages : images,
       ));
     }
   }
@@ -132,8 +174,8 @@ class ShowProductCubit extends Cubit<ShowProductState> {
       (element) => element.product?.uuid == productModel?.uuid,
     );
     emit(LoadedState(
-      products: products,
-      images: images,
+      products: isSearch ? searchProducts : products,
+      images: isSearch ? searchImages : images,
     ));
   }
 

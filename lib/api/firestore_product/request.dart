@@ -58,6 +58,24 @@ class FirestoreProductApi {
     }
   }
 
+  Future<List<ProductModel>> searchProducts(String query) async {
+    try {
+      QuerySnapshot productsSnapshot = await productCollection
+          .where('name', isGreaterThanOrEqualTo: query)
+          .get();
+      List<ProductModel> productsList = [];
+      for (QueryDocumentSnapshot productDoc in productsSnapshot.docs) {
+          final productData = ProductModel.fromJson(
+              productDoc.data() as Map<String, dynamic>);
+          productsList.add(productData);
+        }
+
+      return productsList;
+    } catch (e) {
+      print('Error searching products: $e');
+      throw Exception('Error searching products: $e');
+    }
+    }
   Future<List<ProductModel>> getProducts() async {
     try {
       QuerySnapshot productsSnapshot = await productCollection.get();

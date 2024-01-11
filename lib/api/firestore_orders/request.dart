@@ -15,7 +15,7 @@ class FirestoreOrdersApi {
       if (snapshot?.docs.isNotEmpty == true) {
         var lastVisible =
         snapshot!.docs[snapshot!.docs.length - 1];
-      QuerySnapshot ordersSnapshot = await orderCollection.orderBy('timeCreate').startAt([time]).endAt([0]).startAfterDocument(lastVisible).limit(limit).get();
+      QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time').startAfterDocument(lastVisible).limit(limit).get();
       List<OrderModel> orderList = [];
 
       for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {
@@ -28,7 +28,7 @@ class FirestoreOrdersApi {
       print('Users list: $orderList');
       return orderList;
     } else {
-        QuerySnapshot ordersSnapshot = await orderCollection.get();
+        QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time', descending: true).limit(limit).get();
         List<OrderModel> orderList = [];
 
         for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {

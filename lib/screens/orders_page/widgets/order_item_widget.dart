@@ -21,7 +21,7 @@ class OrderItemWidget extends StatelessWidget {
 
     final DateTime? dateTimeString = order.timeCreate == null
         ? null
-        : DateFormat("yyyy-MM-dd HH:mm").parse(order.timeCreate!);
+        : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS").parse(order.timeCreate!);
     final time = dateTimeString != null
         ? DateFormat('dd.MM.yyyy о HH:mm').format(dateTimeString)
         : '';

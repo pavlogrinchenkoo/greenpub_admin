@@ -94,7 +94,7 @@ class AddProductCubit extends Cubit<AddProductState> {
       final dTime = DateTime.now();
       final numPrice = double.tryParse(price ?? '0') ?? 0;
       final numNewPrice = double.tryParse(newPrice ?? '0') ?? 0;
-      final numWeight = int.tryParse(weight ?? '0') ?? 0;
+      // final numWeight = int.tryParse(weight ?? '0') ?? 0;
       final time = '${dTime.day}.${dTime.month}.${dTime.year}';
       final product = ProductModel(
         uuid: uuid,
@@ -103,7 +103,7 @@ class AddProductCubit extends Cubit<AddProductState> {
         oldPrice: numNewPrice,
         category: category,
         description: description,
-        weight: numWeight,
+        weight: weight,
         timeCreate: time,
         isPromo: isPromo,
         tags: tags,

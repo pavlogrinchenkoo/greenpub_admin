@@ -15,7 +15,7 @@ class ProductModel {
   final String? image;
   final String? name;
   final String? description;
-  final int? weight;
+  final String? weight;
   final String? timeCreate;
 
   ProductModel(

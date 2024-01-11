@@ -20,7 +20,7 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
       image: json['image'] as String?,
       name: json['name'] as String?,
       description: json['description'] as String?,
-      weight: json['weight'] as int?,
+      weight: json['weight'] as String?,
       timeCreate: json['timeCreate'] as String?,
     );
 
