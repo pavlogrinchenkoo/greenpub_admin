@@ -21,7 +21,7 @@ class FirestoreProductApi {
       if (snapshot?.docs.isNotEmpty == true) {
         var lastVisible = snapshot!.docs[snapshot!.docs.length - 1];
         QuerySnapshot productSnapshot = await productCollection
-            .orderBy('uuid')
+            .orderBy('time', descending: true)
             .startAfterDocument(lastVisible)
             .limit(limit)
             .get();
@@ -37,8 +37,10 @@ class FirestoreProductApi {
         print('product list: $productList');
         return productList;
       } else {
-        QuerySnapshot productSnapshot =
-            await productCollection.orderBy('uuid').limit(limit).get();
+        QuerySnapshot productSnapshot = await productCollection
+            .orderBy('time', descending: true)
+            .limit(limit)
+            .get();
         snapshot = productSnapshot;
         List<ProductModel> productList = [];
 
@@ -58,6 +60,18 @@ class FirestoreProductApi {
     }
   }
 
+  Future<void> postProductTime(String uid) async {
+    try {
+      DocumentReference tagDoc = productCollection.doc(uid);
+      final Timestamp time = Timestamp.fromDate(DateTime.now());
+      await tagDoc.update({
+        'time': time,
+      });
+    } catch (e) {
+      print('Error signing in anonymously: $e');
+    }
+  }
+
   Future<List<ProductModel>> searchProducts(String query) async {
     try {
       QuerySnapshot productsSnapshot = await productCollection
@@ -65,20 +79,22 @@ class FirestoreProductApi {
           .get();
       List<ProductModel> productsList = [];
       for (QueryDocumentSnapshot productDoc in productsSnapshot.docs) {
-          final productData = ProductModel.fromJson(
-              productDoc.data() as Map<String, dynamic>);
-          productsList.add(productData);
-        }
+        final productData =
+            ProductModel.fromJson(productDoc.data() as Map<String, dynamic>);
+        productsList.add(productData);
+      }
 
       return productsList;
     } catch (e) {
       print('Error searching products: $e');
       throw Exception('Error searching products: $e');
     }
-    }
+  }
+
   Future<List<ProductModel>> getProducts() async {
     try {
-      QuerySnapshot productsSnapshot = await productCollection.get();
+      QuerySnapshot productsSnapshot =
+          await productCollection.orderBy('time', descending: true).get();
       List<ProductModel> productsList = [];
 
       for (QueryDocumentSnapshot productsDoc in productsSnapshot.docs) {
@@ -165,6 +181,7 @@ class FirestoreProductApi {
       DocumentReference productDoc = productCollection.doc(uuid);
       await productDoc.set(jsonDecode(jsonEncode(product.toJson())));
       print('User ID: $uuid');
+      await postProductTime(uuid);
     } catch (e) {
       print('Error signing in anonymously: $e');
     }

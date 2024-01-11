@@ -24,6 +24,7 @@ class _SideBarPageState extends State<SideBarPage> {
         CategoriesRoute(),
         TagsRoute(),
         SharesRoute(),
+        SystemRoute(),
       ],
       bodyBuilder: (_, tabsRouter) {
         return Row(
@@ -69,6 +70,10 @@ class _SideBarPageState extends State<SideBarPage> {
                 SideNavigationBarItem(
                   icon: Icons.share,
                   label: 'Акції',
+                ),
+                SideNavigationBarItem(
+                  icon: Icons.settings,
+                  label: 'Системні налаштування',
                 ),
               ],
               onTap: (index) {
