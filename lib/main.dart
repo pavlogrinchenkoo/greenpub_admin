@@ -5,6 +5,7 @@ import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/api/firestore_shared/request.dart';
 import 'package:delivery/api/firestore_tags/request.dart';
 import 'package:delivery/api/firestore_user/request.dart';
+import 'package:delivery/api/system/request.dart';
 import 'package:delivery/firebase_options.dart';
 import 'package:delivery/screens/add_product_page/bloc/bloc.dart';
 import 'package:delivery/screens/auth/login_page/bloc/bloc.dart';
@@ -52,6 +53,7 @@ class _AppState extends State<App> {
   final FirestoreCategoryApi _firestoreCategoryApi = FirestoreCategoryApi();
   final FirestoreTagsApi _firestoreTagsApi = FirestoreTagsApi();
   final SharedApi _sharedApi = SharedApi();
+  final SystemApi _systemApi = SystemApi();
   final Cache _cache = Cache();
 
   @override
@@ -103,7 +105,7 @@ class _AppState extends State<App> {
                 _firestoreProductApi, _firestoreOrdersApi, _firestoreApi, _cache),
           ),
           BlocProvider(
-            create: (_) => SystemCubit(),
+            create: (_) => SystemCubit(_systemApi),
           ),
         ],
         child: MaterialApp.router(

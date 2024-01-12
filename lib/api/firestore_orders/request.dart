@@ -30,7 +30,7 @@ class FirestoreOrdersApi {
     } else {
         QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time', descending: true).limit(limit).get();
         List<OrderModel> orderList = [];
-
+        print('ordersSnapshot: $ordersSnapshot');
         for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {
           if (ordersDoc.exists) {
             final userData =

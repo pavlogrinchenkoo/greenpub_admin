@@ -1,8 +1,10 @@
 import 'package:auto_route/annotations.dart';
 import 'package:delivery/screens/system_page/bloc/bloc.dart';
 import 'package:delivery/screens/system_page/bloc/state.dart';
+import 'package:delivery/screens/system_page/widgets/custom_container.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
+import 'package:delivery/widgets/custom_buttom.dart';
 import 'package:delivery/widgets/custom_indicator.dart';
 import 'package:delivery/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ class _SystemPageState extends State<SystemPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _bloc = context.read<SystemCubit>();
     return BlocBuilder<SystemCubit, SystemState>(builder: (context, state) {
       if (state is LoadingState) {
         return const CustomIndicator();
@@ -35,47 +38,23 @@ class _SystemPageState extends State<SystemPage> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: BC.white,
-                    borderRadius: BRadius.r16,
-                    boxShadow: BShadow.light,
-                  ),
-                  child: Row(
-                    children: [
-                      Text('Час роботи: ', style: BS.bold18),
-                      Text(
-                        '09:00 - 18:00 ',
-                        style: BS.bold18,
-                      ),
-                      const Spacer(),
-                      InkWell(onTap: () {}, child: const Icon(Icons.edit)),
-                    ],
-                  ),
+                 CustomContainer(
+                  title: 'Час роботи: ',
+                  value: '${state.system?.startTime} - ${state.system?.endTime}',
                 ),
                 Space.h16,
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: BC.white,
-                    borderRadius: BRadius.r16,
-                    boxShadow: BShadow.light,
-                  ),
-                  child: Row(
-                    children: [
-                      Text('Кількість грн за км: ', style: BS.bold18),
-                      Text(
-                        '30 грн ',
-                        style: BS.bold18,
-                      ),
-                      const Spacer(),
-                      InkWell(onTap: () {}, child: const Icon(Icons.edit)),
-                    ],
-                  ),
+                 CustomContainer(
+                  title: 'Кількість за км: ',
+                  value: '${state.system?.deliveryPrice} грн ',
                 ),
+                Space.h16,
+                CustomButton(
+                  onTap: () => _bloc.showEdit(context, state.system),
+                  icon: Text(
+                    'Редагувати',
+                    style: BS.bold18.apply(color: BC.beige),
+                  ),
+                )
               ],
             ),
           ),
