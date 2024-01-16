@@ -9,6 +9,7 @@ import 'package:delivery/screens/shares_page/page.dart';
 import 'package:delivery/screens/splash_page/page.dart';
 import 'package:delivery/screens/orders_page/page.dart';
 import 'package:delivery/screens/sidebar/sidebar.dart';
+import 'package:delivery/screens/statistics/page.dart';
 import 'package:delivery/screens/system_page/pqge.dart';
 import 'package:delivery/screens/tags_page/page.dart';
 import 'package:delivery/screens/user_page/page.dart';
@@ -31,6 +32,7 @@ class AppRouter extends _$AppRouter {
       AutoRoute(path: 'tags', page: TagsRoute.page),
       AutoRoute(path: 'shares', page: SharesRoute.page),
       AutoRoute(path: 'system', page: SystemRoute.page),
+      AutoRoute(path: 'statistics', page: StatisticsRoute.page),
     ]),
     AutoRoute(path: '/user/:uid', page: UserRoute.page),
     AutoRoute(path: '/order/:uid', page: OrderRoute.page),

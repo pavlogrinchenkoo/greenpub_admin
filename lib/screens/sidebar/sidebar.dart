@@ -25,6 +25,7 @@ class _SideBarPageState extends State<SideBarPage> {
         TagsRoute(),
         SharesRoute(),
         SystemRoute(),
+        StatisticsRoute(),
       ],
       bodyBuilder: (_, tabsRouter) {
         return Row(
@@ -74,6 +75,10 @@ class _SideBarPageState extends State<SideBarPage> {
                 SideNavigationBarItem(
                   icon: Icons.settings,
                   label: 'Системні налаштування',
+                ),
+                SideNavigationBarItem(
+                  icon: Icons.analytics_outlined,
+                  label: 'Статистика',
                 ),
               ],
               onTap: (index) {

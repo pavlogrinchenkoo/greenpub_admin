@@ -95,4 +95,49 @@ class FirestoreOrdersApi {
       print('Error signing in anonymously: $e');
     }
   }
+
+  Future<List<OrderModel>> getOrdersFilter(DateTime time) async {
+    try {
+        QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time', descending: true).where('time', isGreaterThanOrEqualTo: Timestamp.fromDate(time)).get();
+        List<OrderModel> orderList = [];
+        print('ordersSnapshot: $ordersSnapshot');
+        for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {
+          if (ordersDoc.exists) {
+            final userData =
+            OrderModel.fromJson(ordersDoc.data() as Map<String, dynamic>);
+            print(userData);
+            orderList.add(userData);
+          }
+        }
+        print('Users list: $orderList');
+        return orderList;
+    } catch (e) {
+      print('Error getting users list: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<OrderModel>> getElementsYesterday() async {
+    DateTime now = DateTime.now();
+    DateTime yesterdayStart = DateTime(now.year, now.month, now.day - 1, 0, 0, 0, 0, 0);
+    DateTime yesterdayEnd = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0).subtract(Duration(milliseconds: 1));
+
+    QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time', descending: true)
+        .where('time', isGreaterThanOrEqualTo: Timestamp.fromDate(yesterdayStart))
+        .where('time', isLessThanOrEqualTo: Timestamp.fromDate(yesterdayEnd))
+        .get();
+
+    List<OrderModel> orderList = [];
+    print('ordersSnapshot: $ordersSnapshot');
+    for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {
+      if (ordersDoc.exists) {
+        final userData =
+        OrderModel.fromJson(ordersDoc.data() as Map<String, dynamic>);
+        print(userData);
+        orderList.add(userData);
+      }
+    }
+    print('Users list: $orderList');
+    return orderList;
+  }
 }

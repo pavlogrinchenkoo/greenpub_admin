@@ -177,7 +177,7 @@ class _CustomContainer extends StatelessWidget {
                           ),
                           const Spacer(),
                           Text(
-                            '${product?.weight ?? '0'} г',
+                            '${product?.weight ?? '0'}',
                             style: BS.bold16,
                           ),
                         ],
