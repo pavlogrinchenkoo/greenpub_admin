@@ -9,9 +9,11 @@ import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/api/firestore_tags/dto.dart';
 import 'package:delivery/api/firestore_tags/request.dart';
 import 'package:delivery/routers/routes.dart';
+import 'package:delivery/screens/product_page/widgets/show_pisition.dart';
 import 'package:delivery/screens/products_page/bloc/bloc.dart';
 import 'package:delivery/widgets/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 import 'state.dart';
@@ -34,9 +36,13 @@ class ProductCubit extends Cubit<ProductState> {
   List<TagModel> tagsList = [];
   String? imagePath;
   CategoryModel? category;
+  bool isShow = true;
+  List<ProductModel> sauces = [];
+  List<ProductModelPosition> positions = [];
 
   Future<void> init(BuildContext context, String? id) async {
     try {
+      dispose();
       emit(LoadingState());
       final product = await firestoreApi.getProductData(id ?? '');
       final tagsList = await firestoreTagsApi.getTagsList();
@@ -49,9 +55,16 @@ class ProductCubit extends Cubit<ProductState> {
       this.imagePath = imagePath;
       final image = await firestoreApi.getImage(imagePath);
       this.image = image;
+      isShow = product?.isShow ?? true;
       category = product?.category;
       tags = product?.tags;
-      print(category?.category);
+      positions = product?.positions ?? [];
+      final sauces = await firestoreApi.searchProductsSauces();
+      for (final sauce in sauces) {
+        if (sauce.category?.uuid == 'ebc7dc00-0a3e-1dfc-960e-83d41c06d6e2') {
+          this.sauces.add(sauce);
+        }
+      }
 
       emit(LoadedState(
           product: product,
@@ -75,7 +88,9 @@ class ProductCubit extends Cubit<ProductState> {
       bool? isPromo,
       String? imagePath,
       String? uuid,
-      List<TagModel>? tags}) async {
+      List<TagModel>? tags,
+      bool? isShow,
+      List<ProductModelPosition>? positions}) async {
     try {
       final dTime = DateTime.now();
       final numPrice = double.tryParse(price ?? '0');
@@ -84,18 +99,19 @@ class ProductCubit extends Cubit<ProductState> {
 
       final time = '${dTime.day}.${dTime.month}.${dTime.year}';
       final product = ProductModel(
-        uuid: uuid,
-        name: name,
-        price: numPrice,
-        oldPrice: numNewPrice,
-        category: category,
-        description: description,
-        weight: weight,
-        timeCreate: time,
-        isPromo: isPromo,
-        tags: tags,
-        image: imagePath,
-      );
+          uuid: uuid,
+          name: name,
+          price: numPrice,
+          oldPrice: numNewPrice,
+          category: category,
+          description: description,
+          weight: weight,
+          timeCreate: time,
+          isPromo: isPromo,
+          tags: tags,
+          image: imagePath,
+          isShow: isShow,
+          positions: positions);
       print(product.category);
       print(product.tags);
       print(product.image);
@@ -122,7 +138,7 @@ class ProductCubit extends Cubit<ProductState> {
     if (context.mounted) {
       context.router
           .pop()
-          .whenComplete(() => context.read<ProductsCubit>().init(context, true));
+          .whenComplete(() => context.read<ProductsCubit>().init(context));
     }
   }
 
@@ -132,11 +148,21 @@ class ProductCubit extends Cubit<ProductState> {
       if (context.mounted) {
         context.router
             .pop()
-            .whenComplete(() => context.read<ProductsCubit>().init(context, true));
+            .whenComplete(() => context.read<ProductsCubit>().init(context));
       }
     } catch (e) {
       print('Error signing in anonymously: $e');
     }
+  }
+
+  void changeIsShow(bool isShow) {
+    this.isShow = !isShow;
+    emit(LoadedState(
+        product: product,
+        image: image,
+        imagePath: imagePath,
+        categoryList: categoryList,
+        tagsList: tagsList));
   }
 
   Future<void> uploadImage() async {
@@ -162,7 +188,7 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 
-  void addTegs(List<dynamic> uuids) {
+  void addTags(List<dynamic> uuids) {
     tags = tagsList.where((element) => uuids.contains(element.uuid)).toList();
     print(tags?.length);
   }
@@ -179,5 +205,63 @@ class ProductCubit extends Cubit<ProductState> {
         image: image,
         categoryList: categoryList,
         tagsList: tagsList));
+  }
+
+  void showPosition(BuildContext context) {
+    showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: '',
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (pageContext, _, __) {
+          return Material(child: ShowPosition(sauces: sauces));
+        });
+  }
+
+  void addSauce(ProductModel? sauce) {
+    final position = ProductModelPosition(
+      uuid: sauce?.uuid,
+      oldPrice: sauce?.oldPrice,
+      price: sauce?.price,
+      isPromo: sauce?.isPromo,
+      category: sauce?.category,
+      tags: sauce?.tags,
+      image: sauce?.image,
+      name: sauce?.name,
+      description: sauce?.description,
+      weight: sauce?.weight,
+      timeCreate: sauce?.timeCreate,
+      required: false,
+    );
+    positions.add(position);
+  }
+
+  void removeSauce(String? uuid) {
+    positions.removeWhere((element) => element.uuid == uuid);
+  }
+
+  void editSauce(String? uuid) {
+    final required = positions.where((element) => element.uuid == uuid).first.required;
+     positions.where((element) => element.uuid == uuid).first.required = !(required ?? false);
+
+  }
+
+  dispose() {
+    positions.clear();
+    sauces.clear();
+  }
+
+  void back(BuildContext context) {
+    if (context.mounted) {
+      context.router.pop();
+    }
+    emit(LoadedState(
+        product: product,
+        image: image,
+        imagePath: imagePath,
+        categoryList: categoryList,
+        tagsList: tagsList
+    ));
   }
 }

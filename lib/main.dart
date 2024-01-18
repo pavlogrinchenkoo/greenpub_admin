@@ -82,7 +82,7 @@ class _AppState extends State<App> {
                 _firestoreApi, _firestoreOrdersApi, _firestoreProductApi),
           ),
           BlocProvider(
-            create: (_) => ProductsCubit(_firestoreProductApi, _cache),
+            create: (_) => ProductsCubit(_firestoreProductApi, _cache, _firestoreCategoryApi),
           ),
           BlocProvider(
             create: (_) => ProductCubit(_firestoreProductApi,

@@ -120,4 +120,16 @@ class FirestoreCategoryApi {
       return '';
     }
   }
+
+  Future<void> updateShow(String uuid, bool isShow) async {
+    try {
+      DocumentReference categoryDoc = categoriesCollection.doc(uuid);
+      await categoryDoc.update({
+        'isShow': isShow,
+      });
+      print('User ID: $uuid');
+    } catch (e) {
+      print('Error signing in anonymously: $e');
+    }
+  }
 }

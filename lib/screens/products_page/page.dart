@@ -7,6 +7,7 @@ import 'package:delivery/utils/spaces.dart';
 import 'package:delivery/widgets/custom_buttom.dart';
 import 'package:delivery/widgets/custom_indicator.dart';
 import 'package:delivery/widgets/custom_scaffold.dart';
+import 'package:delivery/widgets/selected_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,12 +22,11 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   late ProductsCubit _bloc;
-  final ScrollController controller = ScrollController();
 
   @override
   void initState() {
     _bloc = context.read<ProductsCubit>();
-    _bloc.init(context, false);
+    _bloc.init(context);
     super.initState();
   }
 
@@ -39,42 +39,60 @@ class _ProductsPageState extends State<ProductsPage> {
       }
       if (state is LoadedState) {
         return CustomScaffold(
-          body: Column(
-            children: [
-              Expanded(
-                  child: NotificationListener<ScrollNotification>(
-                      onNotification: (ScrollNotification scrollInfo) {
-                        if (scrollInfo.metrics.pixels ==
-                            scrollInfo.metrics.maxScrollExtent) {
-                          if (!_bloc.isLoadMoreTriggered) {
-                            _bloc.getProducts();
-                            _bloc.isLoadMoreTriggered = true;
-                          }
-                        } else {
-                          _bloc.isLoadMoreTriggered = false;
-                        }
-                        return true;
-                      },
-                      child: GridView.builder(
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.all(20),
-                          controller: controller,
-                          itemCount: state.products?.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            mainAxisExtent: 375,
-                            crossAxisCount: 5,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                          ),
-                          itemBuilder: (context, index) {
-                            final product = state.products?[index];
-                            return _CustomContainer(
-                              product: product,
-                              image: state.images?[index]?.bytes,
-                            );
-                          })))
-            ],
+          body: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: state.categories?.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final category = state.categories?[index].category;
+              final isSelected = state.categories?[index].isShow;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(category ?? '', style: BS.bold20),
+                      Space.w20,
+                      SelectedButton(
+                        onTap: () => _bloc.showSelectedDialog(
+                            context,
+                            state.categories?[index],
+                            state.products
+                                ?.where((element) =>
+                                    element.category?.category == category)
+                                .toList()),
+                        isSelected: isSelected ?? false,
+                      ),
+                    ],
+                  ),
+                  Space.h16,
+                  GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.products
+                        ?.where(
+                            (element) => element.category?.category == category)
+                        .length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisExtent: 175,
+                      crossAxisCount: 5,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = state.products
+                          ?.where((element) =>
+                              element.category?.category == category)
+                          .toList()[index];
+                      return _CustomContainer(
+                        product: product,
+                      );
+                    },
+                  ),
+                  Space.h16,
+                ],
+              );
+            },
           ),
           floatingActionButton: InkWell(
             onTap: () => _bloc.goAddProductPage(context),
@@ -97,9 +115,8 @@ class _ProductsPageState extends State<ProductsPage> {
 
 class _CustomContainer extends StatelessWidget {
   final ProductModel? product;
-  final Uint8List? image;
 
-  const _CustomContainer({super.key, this.product, this.image});
+  const _CustomContainer({super.key, this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -115,25 +132,6 @@ class _CustomContainer extends StatelessWidget {
           children: [
             Column(
               children: [
-                (image == null)
-                    ? Container(
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16)),
-                          color: BC.grey,
-                        ),
-                      )
-                    : ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16)),
-                        child: Image.memory(
-                          image!,
-                          width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
@@ -159,12 +157,14 @@ class _CustomContainer extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              (product?.oldPrice != null && product?.oldPrice != 0)
+                              (product?.oldPrice != null &&
+                                      product?.oldPrice != 0)
                                   ? Text('${product?.price ?? '0'}₴',
                                       style: BS.bold16.apply(color: BC.red))
                                   : const SizedBox(),
                               Space.h4,
-                              (product?.oldPrice == null || product?.oldPrice == 0)
+                              (product?.oldPrice == null ||
+                                      product?.oldPrice == 0)
                                   ? Text(
                                       '${product?.price ?? '0'}₴',
                                       style: BS.bold22,
@@ -187,18 +187,20 @@ class _CustomContainer extends StatelessWidget {
                 )
               ],
             ),
-            (product?.isPromo ?? false) ? Positioned(
-              right: 8,
-              top: 8,
-                child: Container(
-                    decoration:
-                        BoxDecoration(color: BC.red, borderRadius: BRadius.r4),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text(
-                      'ВИБІР ГУРМАНІВ',
-                      style: BS.bold14.apply(color: BC.white),
-                    ))): const SizedBox(),
+            (product?.isPromo ?? false)
+                ? Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: BC.red, borderRadius: BRadius.r4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Text(
+                          'ВИБІР ГУРМАНІВ',
+                          style: BS.bold14.apply(color: BC.white),
+                        )))
+                : const SizedBox(),
           ],
         ),
       ),

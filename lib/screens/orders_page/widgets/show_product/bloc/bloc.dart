@@ -27,33 +27,22 @@ class ShowProductCubit extends Cubit<ShowProductState> {
   List<ProductModel> products = [];
   List<ProductModel> searchProducts = [];
   List<ItemProduct> selectedProducts = [];
-  bool isLoadMoreTriggered = false;
   int count = 0;
-  List<ImageModel?> images = [];
-  List<ImageModel?> searchImages = [];
   bool isSearch = false;
 
 
   Future<void> init(BuildContext context) async {
     products = [];
-    images = [];
     count = 0;
-    isLoadMoreTriggered = false;
     selectedProducts = [];
     try {
       emit(LoadingState());
       final products = await firestoreApi.getProducts();
       this.products = products;
       count = products.length;
-      for (final product in products) {
-        final image = product.image;
-        final getImage = await firestoreApi.getImage(image ?? '');
-        images.add(getImage);
-      }
       // await cache.savePhoto(images);
       emit(LoadedState(
         products: products,
-        images: images,
       ));
     } catch (e) {
       emit(ErrorState());
@@ -77,7 +66,6 @@ class ShowProductCubit extends Cubit<ShowProductState> {
         isSearch = true;
       }
       searchProducts = [];
-      searchImages = [];
       searchProducts = products
           .where((element) => element.name!.toLowerCase().contains(query.toLowerCase()))
           .toList();
@@ -85,13 +73,8 @@ class ShowProductCubit extends Cubit<ShowProductState> {
       if(searchProducts.isEmpty) {
         searchProducts = products;
       }
-      for(final product in searchProducts) {
-        final image = images.where((element) => element?.path == product.image).first;
-        searchImages.add(image);
-      }
       emit(LoadedState(
         products: searchProducts,
-        images: searchImages,
       ));
     } catch (e) {
       emit(ErrorState());
@@ -105,12 +88,7 @@ class ShowProductCubit extends Cubit<ShowProductState> {
       if (count >= 50) {
         final products = await firestoreApi.getProductsList(50, false);
         this.products.addAll(products);
-        for (final product in products) {
-          final image = product.image;
-          final getImage = await firestoreApi.getImage(image ?? '');
-          images.add(getImage);
-        }
-        emit(LoadedState(products: this.products, images: images));
+        emit(LoadedState(products: this.products,));
         count = products.length;
       }
     } catch (e) {
@@ -127,7 +105,6 @@ class ShowProductCubit extends Cubit<ShowProductState> {
     );
     emit(LoadedState(
       products: isSearch ? searchProducts : products,
-      images: isSearch ? searchImages : images,
     ));
   }
 
@@ -145,7 +122,6 @@ class ShowProductCubit extends Cubit<ShowProductState> {
         'count: ${selectedProducts.where((element) => element.product?.uuid == productModel?.uuid).first.count}');
     emit(LoadedState(
       products: isSearch ? searchProducts : products,
-      images: isSearch ? searchImages : images,
     ));
   }
 
@@ -164,7 +140,6 @@ class ShowProductCubit extends Cubit<ShowProductState> {
           .count = removeCount;
       emit(LoadedState(
         products: isSearch ? searchProducts : products,
-        images: isSearch ? searchImages : images,
       ));
     }
   }
@@ -175,7 +150,6 @@ class ShowProductCubit extends Cubit<ShowProductState> {
     );
     emit(LoadedState(
       products: isSearch ? searchProducts : products,
-      images: isSearch ? searchImages : images,
     ));
   }
 

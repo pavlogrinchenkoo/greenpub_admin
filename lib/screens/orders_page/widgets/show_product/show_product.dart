@@ -43,19 +43,6 @@ class _ShowProductState extends State<ShowProduct> {
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
           ),
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels ==
-                  scrollInfo.metrics.maxScrollExtent) {
-                if (!_bloc.isLoadMoreTriggered) {
-                  _bloc.getProducts();
-                  _bloc.isLoadMoreTriggered = true;
-                }
-              } else {
-                _bloc.isLoadMoreTriggered = false;
-              }
-              return true;
-            },
             child: Column(
               children: [
                 Padding(
@@ -93,24 +80,21 @@ class _ShowProductState extends State<ShowProduct> {
                     itemCount: state.products?.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      mainAxisExtent: 290,
+                      mainAxisExtent: 170,
                       crossAxisCount: 6,
                       mainAxisSpacing: 16,
                       crossAxisSpacing: 16,
                     ),
                     itemBuilder: (context, index) {
-                      final image = state.images?[index];
                       final item = state.products?[index];
                       return _CustomItemProduct(
                         item: item,
-                        image: image?.bytes,
                       );
                     },
                   ),
                 ),
               ],
             ),
-          ),
         );
       }
       return const SizedBox();
@@ -120,9 +104,8 @@ class _ShowProductState extends State<ShowProduct> {
 
 class _CustomItemProduct extends StatelessWidget {
   final ProductModel? item;
-  final Uint8List? image;
 
-  const _CustomItemProduct({super.key, this.item, this.image});
+  const _CustomItemProduct({super.key, this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -139,24 +122,6 @@ class _CustomItemProduct extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            (image != null)
-                ? ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(10),
-                    ),
-                    child: Image.memory(
-                      image!,
-                      width: 250,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : Container(
-                    width: 250,
-                    height: 100,
-                    color: BC.grey,
-                  ),
-            Space.h16,
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
               child: SizedBox(
@@ -168,6 +133,8 @@ class _CustomItemProduct extends StatelessWidget {
                     Text(
                       item?.name ?? '',
                       style: BS.bold18.apply(color: BC.black),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Space.h8,
                     Text(

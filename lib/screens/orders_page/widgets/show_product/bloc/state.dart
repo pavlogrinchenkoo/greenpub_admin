@@ -8,8 +8,7 @@ class LoadingState extends ShowProductState {}
 
 class LoadedState extends ShowProductState {
   final List<ProductModel>? products;
-  final List<ImageModel?>? images;
-  LoadedState({this.products, this.images});
+  LoadedState({this.products});
 }
 
 class ErrorState extends ShowProductState {}

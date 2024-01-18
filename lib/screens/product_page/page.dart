@@ -1,9 +1,11 @@
 import 'package:auto_route/annotations.dart';
 import 'package:delivery/api/firestore_category/dto.dart';
+import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_tags/dto.dart';
 import 'package:delivery/screens/add_product_page/page.dart';
 import 'package:delivery/screens/product_page/bloc/bloc.dart';
 import 'package:delivery/screens/product_page/bloc/state.dart';
+import 'package:delivery/screens/product_page/widgets/show_pisition.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
 import 'package:delivery/widgets/custom_appbar.dart';
@@ -11,6 +13,7 @@ import 'package:delivery/widgets/custom_buttom.dart';
 import 'package:delivery/widgets/custom_indicator.dart';
 import 'package:delivery/widgets/custom_scaffold.dart';
 import 'package:delivery/widgets/custom_text_field.dart';
+import 'package:delivery/widgets/selected_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,10 +74,12 @@ class _ProductPageState extends State<ProductPage> {
             padding: const EdgeInsets.all(20),
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
                     flex: 1,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
                           onTap: () => _bloc.uploadImage(),
@@ -134,6 +139,8 @@ class _ProductPageState extends State<ProductPage> {
                                   uuid: controllerUUID.text,
                                   imagePath: _bloc.imagePath,
                                   isPromo: _bloc.isPromo,
+                                  isShow: _bloc.isShow,
+                                  positions: _bloc.positions,
                                 ),
                                 icon: Text('Змінити Продукт',
                                     style: BS.bold14.apply(color: BC.beige)),
@@ -248,56 +255,20 @@ class _ProductPageState extends State<ProductPage> {
                                     text: 'Стара ціна',
                                   ),
                                   Space.h16,
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  Row(
                                     children: [
-                                      Text('Promo',
-                                          style: BS.light14
-                                              .apply(color: BC.black)),
-                                      Space.h8,
-                                      InkWell(
-                                        borderRadius: BRadius.r16,
+                                      IsSelectedButton(
                                         onTap: () =>
                                             _bloc.changePromo(_bloc.isPromo),
-                                        child: (!_bloc.isPromo)
-                                            ? Container(
-                                                width: 90,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 24,
-                                                        vertical: 8),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BRadius.r16,
-                                                  border: Border.all(
-                                                    color: BC.black,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: Text('ВИКЛ',
-                                                    style: BS.light14.apply(
-                                                        color: BC.black)),
-                                              )
-                                            : Container(
-                                                width: 90,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 24,
-                                                        vertical: 8),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BRadius.r16,
-                                                  color: BC.black,
-                                                  border: Border.all(
-                                                    color: BC.black,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: Center(
-                                                  child: Text('ВКЛ',
-                                                      style: BS.light14.apply(
-                                                          color: BC.white)),
-                                                ),
-                                              ),
+                                        title: 'Promo',
+                                        isSelected: _bloc.isPromo,
+                                      ),
+                                      Space.w20,
+                                      IsSelectedButton(
+                                        onTap: () =>
+                                            _bloc.changeIsShow(_bloc.isShow),
+                                        title: 'Активне',
+                                        isSelected: _bloc.isShow,
                                       ),
                                     ],
                                   ),
@@ -310,9 +281,31 @@ class _ProductPageState extends State<ProductPage> {
                         Row(
                           children: [
                             Expanded(
-                              child: CTextField(
-                                controller: controllerDescription,
-                                text: 'Опис продукту',
+                              child: Column(
+                                children: [
+                                  CTextField(
+                                    controller: controllerDescription,
+                                    text: 'Опис продукту',
+                                  ),
+                                  Space.h16,
+                                  Container(
+                                    padding: const EdgeInsets.all(16),
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BRadius.r16,
+                                      color: BC.white,
+                                    ),
+                                    child: ListView.builder(
+                                        itemCount: _bloc.positions.length,
+                                        itemBuilder: (context, index) {
+                                          final position =
+                                              _bloc.positions[index];
+                                          return CustomSauceItem(
+                                            position: position,
+                                          );
+                                        }),
+                                  )
+                                ],
                               ),
                             ),
                             Space.w52,
@@ -362,7 +355,7 @@ class _ProductPageState extends State<ProductPage> {
                                   FormBuilderFilterChip(
                                     onChanged: (value) {
                                       print(value);
-                                      _bloc.addTegs(value ?? []);
+                                      _bloc.addTags(value ?? []);
                                     },
                                     name: 'filter_chip',
                                     initialValue: product?.tags
@@ -388,6 +381,14 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                           ],
                         ),
+                        Space.h32,
+                        CustomButton(
+                          onTap: () => _bloc.showPosition(context),
+                          icon: Text(
+                            'Показати позиціЇ',
+                            style: BS.bold14.apply(color: BC.white),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -399,5 +400,151 @@ class _ProductPageState extends State<ProductPage> {
       }
       return const SizedBox();
     });
+  }
+}
+
+class IsSelectedButton extends StatelessWidget {
+  final String title;
+  final Function()? onTap;
+  final bool isSelected;
+
+  const IsSelectedButton(
+      {super.key, required this.title, this.onTap, required this.isSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: BS.light14.apply(color: BC.black)),
+        Space.h8,
+        InkWell(
+          borderRadius: BRadius.r16,
+          onTap: onTap,
+          child: (!isSelected)
+              ? Container(
+                  width: 90,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BRadius.r16,
+                    border: Border.all(
+                      color: BC.black,
+                      width: 1,
+                    ),
+                  ),
+                  child: Text('ВИКЛ', style: BS.light14.apply(color: BC.black)),
+                )
+              : Container(
+                  width: 90,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BRadius.r16,
+                    color: BC.black,
+                    border: Border.all(
+                      color: BC.black,
+                      width: 1,
+                    ),
+                  ),
+                  child: Center(
+                    child:
+                        Text('ВКЛ', style: BS.light14.apply(color: BC.white)),
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class CustomSauceItem extends StatefulWidget {
+  final ProductModelPosition? position;
+
+  const CustomSauceItem({super.key, this.position});
+
+  @override
+  State<CustomSauceItem> createState() => _CustomSauceItemState();
+}
+
+class _CustomSauceItemState extends State<CustomSauceItem> {
+  @override
+  Widget build(BuildContext context) {
+    final _bloc = context.read<ProductCubit>();
+    bool aa =
+        _bloc.positions.any((element) => element.uuid == widget.position?.uuid);
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: BC.beige,
+        borderRadius: BRadius.r10,
+      ),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.position?.name ?? '',
+                style: BS.bold18,
+              ),
+              Space.h8,
+              Text(
+                '${widget.position?.price ?? ' '} грн',
+                style: BS.sb14,
+              ),
+            ],
+          ),
+          const Spacer(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Додати продукт',
+                    style: BS.sb14,
+                  ),
+                  Space.w8,
+                  SelectedButton(
+                    onTap: () {
+                      _bloc.removeSauce(widget.position?.uuid);
+                      setState(() {});
+                    },
+                    isSelected: _bloc.positions.any(
+                        (element) => element.uuid == widget.position?.uuid),
+                  )
+                ],
+              ),
+              Space.h8,
+              (aa)
+                  ? Row(
+                      children: [
+                        Text(
+                          'Обовязковй',
+                          style: BS.sb14,
+                        ),
+                        Space.w8,
+                        SelectedButton(
+                          onTap: () {
+                            _bloc.editSauce(widget.position?.uuid);
+                            setState(() {});
+                          },
+                          isSelected: _bloc.positions
+                                  .where((element) =>
+                                      element.uuid == widget.position?.uuid)
+                                  .first
+                                  .required ??
+                              false,
+                        )
+                      ],
+                    )
+                  : const SizedBox(),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

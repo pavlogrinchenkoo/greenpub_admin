@@ -11,6 +11,7 @@ CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) =>
       image: json['image'] as String?,
       uuid: json['uuid'] as String?,
       category: json['category'] as String?,
+      isShow: json['isShow'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$CategoryModelToJson(CategoryModel instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$CategoryModelToJson(CategoryModel instance) =>
       'uuid': instance.uuid,
       'category': instance.category,
       'image': instance.image,
+      'isShow': instance.isShow,
     };

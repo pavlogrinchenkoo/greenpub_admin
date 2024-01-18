@@ -72,18 +72,19 @@ class FirestoreProductApi {
     }
   }
 
-  Future<List<ProductModel>> searchProducts(String query) async {
+  Future<List<ProductModel>> searchProductsSauces() async {
     try {
-      QuerySnapshot productsSnapshot = await productCollection
-          .where('name', isGreaterThanOrEqualTo: query)
-          .get();
+      QuerySnapshot productsSnapshot =
+          await productCollection.where('category', isGreaterThanOrEqualTo: {
+        'category': "Соуси",
+      }).get();
       List<ProductModel> productsList = [];
       for (QueryDocumentSnapshot productDoc in productsSnapshot.docs) {
         final productData =
             ProductModel.fromJson(productDoc.data() as Map<String, dynamic>);
         productsList.add(productData);
       }
-
+      print('products list: $productsList');
       return productsList;
     } catch (e) {
       print('Error searching products: $e');
@@ -205,6 +206,18 @@ class FirestoreProductApi {
       await userDoc.delete();
     } catch (e) {
       print('Error deleting user account: $e');
+    }
+  }
+
+  Future<void> updateShow(String uuid, bool isShow) async {
+    try {
+      DocumentReference categoryDoc = productCollection.doc(uuid);
+      await categoryDoc.update({
+        'isShow': isShow,
+      });
+      print('User ID: $uuid');
+    } catch (e) {
+      print('Error signing in anonymously: $e');
     }
   }
 }

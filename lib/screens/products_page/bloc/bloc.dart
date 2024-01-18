@@ -1,61 +1,45 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:delivery/api/cache.dart';
+import 'package:delivery/api/firestore_category/dto.dart';
+import 'package:delivery/api/firestore_category/request.dart';
 import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/routers/routes.dart';
+import 'package:delivery/style.dart';
+import 'package:delivery/widgets/custom_show_dialog.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'state.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {
   final FirestoreProductApi firestoreApi;
+  final FirestoreCategoryApi firestoreCategoryApi;
   final Cache cache;
 
-  ProductsCubit(this.firestoreApi, this.cache) : super(LoadingState());
+  ProductsCubit(this.firestoreApi, this.cache, this.firestoreCategoryApi)
+      : super(LoadingState());
 
   List<ProductModel> products = [];
-  bool isLoadMoreTriggered = false;
-  bool isAll = false;
-  int count = 0;
-  List<ImageModel?> images = [];
+  List<CategoryModel> categories = [];
 
-  Future<void> init(BuildContext context, bool isLoadMore) async {
-    products = [];
-    images = [];
-    count = 0;
-    isLoadMoreTriggered = false;
-    isAll = false;
-    // bool pathsMatch = true;
+  Future<void> init(BuildContext context) async {
+    dispose();
     try {
       emit(LoadingState());
-      final products = await firestoreApi.getProductsList(50, isLoadMore);
-      print(products);
-      this.products = products;
-      count = products.length;
-      // final cachedImages = await cache.getPhoto();
-      // if (cachedImages?.length == products.length) {
-      //   for (int i = 0; i < (cachedImages?.length ?? 0); i++) {
-      //     if (cachedImages?[i].path != products[i].image) {
-      //       pathsMatch = false;
-      //       break;
-      //     }
-      //   }
-      // } else {
-      //   pathsMatch = false;
-      // }
-      // if (pathsMatch) {
-      //   images = cachedImages ?? [];
-      // } else {
-        for (final product in products) {
-          final image = product.image;
-          final getImage = await firestoreApi.getImage(image ?? '');
-          images.add(getImage);
-        }
-        // await cache.savePhoto(images);
-      // }
-      emit(LoadedState(products: products, images: images));
+      await getCategories();
+      await getProducts();
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
+  Future<void> getCategories() async {
+    try {
+      final categories = await firestoreCategoryApi.getCategoriesList();
+      this.categories.addAll(categories);
     } catch (e) {
       emit(ErrorState());
     }
@@ -63,20 +47,43 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   Future<void> getProducts() async {
     try {
-      if (count >= 50) {
-        final products = await firestoreApi.getProductsList(50, false);
-        this.products.addAll(products);
-        for (final product in products) {
-          final image = product.image;
-          final getImage = await firestoreApi.getImage(image ?? '');
-          images.add(getImage);
-        }
-        emit(LoadedState(products: this.products, images: images));
-        count = products.length;
-      }
+      final products = await firestoreApi.getProducts();
+      this.products.addAll(products);
+      emit(LoadedState(products: this.products, categories: categories));
     } catch (e) {
       emit(ErrorState());
     }
+  }
+
+  void showSelectedDialog(BuildContext context, CategoryModel? category,
+      List<ProductModel>? products) {
+    bool isShow = category?.isShow ?? true;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CustomShowDialog(
+          title: 'Ви впевнені, що хочете змінити категорію?',
+          buttonOne: 'Змінити',
+          buttonTwo: 'Скасувати',
+          onTapOne: () async {
+            emit(LoadingState());
+            if(context.mounted) context.router.pop();
+             firestoreCategoryApi.updateShow(
+                category?.uuid ?? '', !isShow);
+            for(final product in products ?? []) {
+              await firestoreApi.updateShow(product.uuid , !isShow);
+            }
+            categories = [];
+            products = [];
+            await getCategories();
+            await getProducts();
+          },
+          onTapTwo: () {
+            context.router.pop();
+          },
+        );
+      },
+    );
   }
 
   void goAddProductPage(BuildContext context) {
@@ -88,9 +95,8 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   void dispose() {
-    count = 0;
     products = [];
-    isLoadMoreTriggered = false;
-    isAll = false;
+    categories = [];
+
   }
 }

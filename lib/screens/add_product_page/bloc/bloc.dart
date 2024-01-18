@@ -114,7 +114,7 @@ class AddProductCubit extends Cubit<AddProductState> {
       if (context.mounted) {
         context.router
             .pop()
-            .whenComplete(() => context.read<ProductsCubit>().init(context, true));
+            .whenComplete(() => context.read<ProductsCubit>().init(context));
       }
     } catch (e) {
       if (context.mounted) {
