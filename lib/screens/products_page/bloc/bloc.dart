@@ -74,7 +74,7 @@ class ProductsCubit extends Cubit<ProductsState> {
               await firestoreApi.updateShow(product.uuid , !isShow);
             }
             categories = [];
-            products = [];
+            this.products = [];
             await getCategories();
             await getProducts();
           },

@@ -8,12 +8,14 @@ class CategoryModel {
   final String? category;
   final String? image;
   final bool? isShow;
+  final int? filterOrders;
 
   CategoryModel( {
     this.image,
     this.uuid,
     this.category,
-    this.isShow = true
+    this.isShow = true,
+    this.filterOrders = 0,
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) =>

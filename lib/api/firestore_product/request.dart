@@ -95,7 +95,7 @@ class FirestoreProductApi {
   Future<List<ProductModel>> getProducts() async {
     try {
       QuerySnapshot productsSnapshot =
-          await productCollection.orderBy('time', descending: true).get();
+          await productCollection.orderBy('filterOrders', descending: false).get();
       List<ProductModel> productsList = [];
 
       for (QueryDocumentSnapshot productsDoc in productsSnapshot.docs) {

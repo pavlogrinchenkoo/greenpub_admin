@@ -18,7 +18,8 @@ class ProductModel {
   final String? weight;
   final String? timeCreate;
   final bool? isShow;
-  final List<ProductModelPosition>? positions;
+  final int? filterOrders;
+  final List<PositionGroupModel>? positions;
 
   ProductModel(
       {this.uuid,
@@ -33,12 +34,27 @@ class ProductModel {
       this.weight,
       this.timeCreate,
       this.isShow = true,
+      this.filterOrders = 0,
       this.positions});
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductModelToJson(this);
+}
+
+@JsonSerializable()
+class PositionGroupModel {
+  final String? name;
+  final List<ProductModelPosition>? positions;
+   bool? required;
+
+  PositionGroupModel({this.name, this.positions, this.required});
+
+  factory PositionGroupModel.fromJson(Map<String, dynamic> json) =>
+      _$PositionGroupModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PositionGroupModelToJson(this);
 }
 
 @JsonSerializable()
@@ -54,21 +70,21 @@ class ProductModelPosition {
   final String? description;
   final String? weight;
   final String? timeCreate;
-   bool? required;
+  bool? required;
 
   ProductModelPosition(
       {this.uuid,
-        this.oldPrice,
-        this.price,
-        this.isPromo = false,
-        this.category,
-        this.tags,
-        this.image,
-        this.name,
-        this.description,
-        this.weight,
-        this.timeCreate,
-        this.required = false});
+      this.oldPrice,
+      this.price,
+      this.isPromo = false,
+      this.category,
+      this.tags,
+      this.image,
+      this.name,
+      this.description,
+      this.weight,
+      this.timeCreate,
+      this.required = false});
 
   factory ProductModelPosition.fromJson(Map<String, dynamic> json) =>
       _$ProductModelPositionFromJson(json);

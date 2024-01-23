@@ -21,7 +21,7 @@ class SelectedButton extends StatelessWidget {
           children: [
             isSelected ? Icon(Icons.check, color: BC.black, size: 18) : const SizedBox(),
             isSelected ? Space.w8 : const SizedBox(),
-            isSelected ? Text('Вкл', style: BS.sb14) : Text('Вкл', style: BS.sb14.apply(color: BC.white)),
+            isSelected ? Text('Вкл', style: BS.sb14) : Text('Викл', style: BS.sb14.apply(color: BC.white)),
           ],
         ),
       ),

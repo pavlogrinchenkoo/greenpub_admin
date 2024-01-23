@@ -108,6 +108,7 @@ class AddProductCubit extends Cubit<AddProductState> {
         isPromo: isPromo,
         tags: tags,
         image: imagePath,
+        isShow: true,
       );
       emit(LoadingState());
       await firestoreApi.addProduct(product);

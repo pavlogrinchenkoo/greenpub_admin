@@ -13,7 +13,7 @@ class FirestoreCategoryApi {
 
   Future<List<CategoryModel>> getCategoriesList() async {
     try {
-      QuerySnapshot categoriesSnapshot = await categoriesCollection.get();
+      QuerySnapshot categoriesSnapshot = await categoriesCollection.orderBy('filterOrders', descending: false).get();
       List<CategoryModel> categoriesList = [];
 
       for (QueryDocumentSnapshot categoriesDoc in categoriesSnapshot.docs) {
@@ -46,17 +46,19 @@ class FirestoreCategoryApi {
     }
   }
 
-  Future<void> editCategory(String uuid, String newCategory) async {
+  Future<void> editCategory(String uuid, String newCategory, int? filterOrder ) async {
     try {
       DocumentReference productDoc = categoriesCollection.doc(uuid);
       await productDoc.update({
         'category': newCategory,
+        'filterOrders': filterOrder
       });
       print('User ID: $uuid');
     } catch (e) {
       print('Error signing in anonymously: $e');
     }
   }
+
 
   Future<void> deleteCategory(String uuid) async {
     try {

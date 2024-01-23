@@ -12,6 +12,7 @@ CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) =>
       uuid: json['uuid'] as String?,
       category: json['category'] as String?,
       isShow: json['isShow'] as bool? ?? true,
+      filterOrders: json['filterOrders'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$CategoryModelToJson(CategoryModel instance) =>
@@ -20,4 +21,5 @@ Map<String, dynamic> _$CategoryModelToJson(CategoryModel instance) =>
       'category': instance.category,
       'image': instance.image,
       'isShow': instance.isShow,
+      'filterOrders': instance.filterOrders,
     };

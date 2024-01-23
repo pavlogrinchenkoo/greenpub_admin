@@ -20,6 +20,7 @@ class CategoriesPage extends StatefulWidget {
 
 class _CategoriesPageState extends State<CategoriesPage> {
   final TextEditingController controller = TextEditingController();
+  final TextEditingController controller1 = TextEditingController();
 
   @override
   void initState() {
@@ -100,7 +101,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           child: Row(
                             children: [
                               InkWell(
-                                onTap: () => _bloc.editImage(category?.uuid ?? ''),
+                                onTap: () =>
+                                    _bloc.editImage(category?.uuid ?? ''),
                                 child: (state.images?[index] == null)
                                     ? Container(
                                         width: 50,
@@ -130,22 +132,25 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                 style: BS.light14.apply(color: BC.black),
                               ),
                               const Spacer(),
-                              Row(children: [
-                                IconButton(
-                                    onPressed: () => _bloc.showEditDialog(
-                                        category?.uuid ?? '',
-                                        controller,
-                                        context),
-                                    icon: const Icon(
-                                      Icons.edit,
-                                    )),
-                                IconButton(
-                                    onPressed: () => _bloc.showDeleteDialog(
-                                        category, context),
-                                    icon: const Icon(
-                                      Icons.delete,
-                                    )),
-                              ])
+                              Row(
+                                children: [
+                                  IconButton(
+                                      onPressed: () => _bloc.showEditDialog(
+                                          category,
+                                          controller,
+                                          context,
+                                          controller1),
+                                      icon: const Icon(
+                                        Icons.edit,
+                                      )),
+                                  IconButton(
+                                      onPressed: () => _bloc.showDeleteDialog(
+                                          category, context),
+                                      icon: const Icon(
+                                        Icons.delete,
+                                      )),
+                                ],
+                              ),
                             ],
                           ),
                         ),

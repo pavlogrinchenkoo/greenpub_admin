@@ -69,14 +69,17 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     final averageAll = orders.isNotEmpty ? sum / orders.length : 0.0;
     final averageCard = cardLength.isNotEmpty ? card / cardLength.length : 0.0;
     final averageCash = orders.isNotEmpty ? cash / cashLength.length : 0.0;
+    double averageAllDouble = double.parse(averageAll.toStringAsFixed(2));
+    double averageCardDouble = double.parse(averageCard.toStringAsFixed(2));
+    double averageCashDouble = double.parse(averageCash.toStringAsFixed(2));
 
     emit(LoadedState(
         sum: sum,
         card: card,
         cash: cash,
-        averageAll: averageAll,
-        averageCard: averageCard,
-        averageCash: averageCash,
+        averageAll: averageAllDouble,
+        averageCard: averageCardDouble,
+        averageCash: averageCashDouble,
         cardLength: cardLength.length,
         cashLength: cashLength.length,
         ordersLength: orders.length,

@@ -75,7 +75,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       mainAxisExtent: 175,
-                      crossAxisCount: 5,
+                      crossAxisCount: 4,
                       mainAxisSpacing: 16,
                       crossAxisSpacing: 16,
                     ),

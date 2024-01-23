@@ -23,8 +23,9 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
       weight: json['weight'] as String?,
       timeCreate: json['timeCreate'] as String?,
       isShow: json['isShow'] as bool? ?? true,
+      filterOrders: json['filterOrders'] as int? ?? 0,
       positions: (json['positions'] as List<dynamic>?)
-          ?.map((e) => ProductModelPosition.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => PositionGroupModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -42,7 +43,24 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
       'weight': instance.weight,
       'timeCreate': instance.timeCreate,
       'isShow': instance.isShow,
+      'filterOrders': instance.filterOrders,
       'positions': instance.positions,
+    };
+
+PositionGroupModel _$PositionGroupModelFromJson(Map<String, dynamic> json) =>
+    PositionGroupModel(
+      name: json['name'] as String?,
+      positions: (json['positions'] as List<dynamic>?)
+          ?.map((e) => ProductModelPosition.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      required: json['required'] as bool?,
+    );
+
+Map<String, dynamic> _$PositionGroupModelToJson(PositionGroupModel instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'positions': instance.positions,
+      'required': instance.required,
     };
 
 ProductModelPosition _$ProductModelPositionFromJson(

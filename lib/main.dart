@@ -14,6 +14,7 @@ import 'package:delivery/screens/order_page/bloc/bloc.dart';
 import 'package:delivery/screens/orders_page/bloc/bloc.dart';
 import 'package:delivery/screens/products_page/bloc/bloc.dart';
 import 'package:delivery/screens/shares_page/bloc/bloc.dart';
+import 'package:delivery/screens/show_position/bloc/bloc.dart';
 import 'package:delivery/screens/splash_page/bloc/bloc.dart';
 import 'package:delivery/screens/statistics/bloc/bloc.dart';
 import 'package:delivery/screens/system_page/bloc/bloc.dart';
@@ -110,6 +111,9 @@ class _AppState extends State<App> {
           ),
           BlocProvider(
             create: (_) => StatisticsCubit(_firestoreOrdersApi),
+          ),
+          BlocProvider(
+            create: (_) => ShowPositionCubit(_firestoreProductApi),
           ),
         ],
         child: MaterialApp.router(

@@ -80,9 +80,10 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   Future<void> editCategory(
-      String uid, String newTag, BuildContext context) async {
+      String uid, String newTag, String filterOrder, BuildContext context) async {
     try {
-      await categoriesApi.editCategory(uid, newTag);
+      int filterOrderInt = int.parse(filterOrder);
+      await categoriesApi.editCategory(uid, newTag, filterOrderInt);
       await getCategoriesList();
       if (context.mounted) {
         context.router.pop();
@@ -129,16 +130,19 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   void showEditDialog(
-      String? uid, TextEditingController controller, BuildContext context) {
+      CategoryModel? category, TextEditingController controller, BuildContext context, TextEditingController textController) {
+    controller.text = category?.category ?? '';
+    textController.text = category?.filterOrders.toString() ?? '';
     if (context.mounted) {
       showCupertinoDialog(
           context: context,
-          builder: (context) => CustomEditDialog(
+          builder: (context) => CustomEditCategoryDialog(
               controller: controller,
+              controller1: textController,
               title: 'Змінити Категорію?',
               buttonOne: 'Змінити',
               onTapOne: () {
-                editCategory(uid ?? '', controller.text, context);
+                editCategory(category?.uuid ?? '', controller.text, textController.text, context);
               },
               buttonTwo: 'Скасувати',
               onTapTwo: () {

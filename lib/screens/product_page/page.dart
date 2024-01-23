@@ -5,7 +5,7 @@ import 'package:delivery/api/firestore_tags/dto.dart';
 import 'package:delivery/screens/add_product_page/page.dart';
 import 'package:delivery/screens/product_page/bloc/bloc.dart';
 import 'package:delivery/screens/product_page/bloc/state.dart';
-import 'package:delivery/screens/product_page/widgets/show_pisition.dart';
+import 'package:delivery/screens/show_position/show_pisition.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
 import 'package:delivery/widgets/custom_appbar.dart';
@@ -19,6 +19,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+
+import 'widgets/positions_group.dart';
 
 @RoutePage()
 class ProductPage extends StatefulWidget {
@@ -38,6 +40,7 @@ class _ProductPageState extends State<ProductPage> {
   TextEditingController controllerDescription = TextEditingController();
   TextEditingController controllerWeight = TextEditingController();
   TextEditingController controllerTimeCreate = TextEditingController();
+  TextEditingController controllerFilterOrders = TextEditingController();
   late ProductCubit _bloc;
 
   @override
@@ -61,8 +64,9 @@ class _ProductPageState extends State<ProductPage> {
         controllerPrice.text = '${state.product?.price ?? ' '}';
         controllerNewPrice.text = '${state.product?.oldPrice ?? ' '}';
         controllerDescription.text = state.product?.description ?? '';
-        controllerWeight.text = '${state.product?.weight ?? ' '}';
+        controllerWeight.text = state.product?.weight ?? ' ';
         controllerTimeCreate.text = state.product?.timeCreate ?? '';
+        controllerFilterOrders.text = '${state.product?.filterOrders ?? ' '}';
 
         return CustomScaffold(
           appBar: CustomAppBar(
@@ -141,6 +145,7 @@ class _ProductPageState extends State<ProductPage> {
                                   isPromo: _bloc.isPromo,
                                   isShow: _bloc.isShow,
                                   positions: _bloc.positions,
+                                  filterOrders: controllerFilterOrders.text,
                                 ),
                                 icon: Text('Змінити Продукт',
                                     style: BS.bold14.apply(color: BC.beige)),
@@ -272,6 +277,37 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                     ],
                                   ),
+                                  Space.h16,
+                                  Space.h8,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Приоритет',
+                                        style: BS.light14.apply(color: BC.black),
+                                      ),
+                                      Space.h8,
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BRadius.r16,
+                                          border: Border.all(color: BC.black),
+                                        ),
+                                        child: TextField(
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(4),
+                                            ],
+                                            controller: controllerFilterOrders,
+                                            decoration: const InputDecoration(
+                                              hintText: 'Пріоритет',
+                                              border: InputBorder.none,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -300,7 +336,7 @@ class _ProductPageState extends State<ProductPage> {
                                         itemBuilder: (context, index) {
                                           final position =
                                               _bloc.positions[index];
-                                          return CustomSauceItem(
+                                          return PositionsGroup(
                                             position: position,
                                           );
                                         }),
@@ -383,7 +419,7 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Space.h32,
                         CustomButton(
-                          onTap: () => _bloc.showPosition(context),
+                          onTap: () => _bloc.showPosition(context, null),
                           icon: Text(
                             'Показати позиціЇ',
                             style: BS.bold14.apply(color: BC.white),
@@ -454,97 +490,6 @@ class IsSelectedButton extends StatelessWidget {
                 ),
         ),
       ],
-    );
-  }
-}
-
-class CustomSauceItem extends StatefulWidget {
-  final ProductModelPosition? position;
-
-  const CustomSauceItem({super.key, this.position});
-
-  @override
-  State<CustomSauceItem> createState() => _CustomSauceItemState();
-}
-
-class _CustomSauceItemState extends State<CustomSauceItem> {
-  @override
-  Widget build(BuildContext context) {
-    final _bloc = context.read<ProductCubit>();
-    bool aa =
-        _bloc.positions.any((element) => element.uuid == widget.position?.uuid);
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: BC.beige,
-        borderRadius: BRadius.r10,
-      ),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.position?.name ?? '',
-                style: BS.bold18,
-              ),
-              Space.h8,
-              Text(
-                '${widget.position?.price ?? ' '} грн',
-                style: BS.sb14,
-              ),
-            ],
-          ),
-          const Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    'Додати продукт',
-                    style: BS.sb14,
-                  ),
-                  Space.w8,
-                  SelectedButton(
-                    onTap: () {
-                      _bloc.removeSauce(widget.position?.uuid);
-                      setState(() {});
-                    },
-                    isSelected: _bloc.positions.any(
-                        (element) => element.uuid == widget.position?.uuid),
-                  )
-                ],
-              ),
-              Space.h8,
-              (aa)
-                  ? Row(
-                      children: [
-                        Text(
-                          'Обовязковй',
-                          style: BS.sb14,
-                        ),
-                        Space.w8,
-                        SelectedButton(
-                          onTap: () {
-                            _bloc.editSauce(widget.position?.uuid);
-                            setState(() {});
-                          },
-                          isSelected: _bloc.positions
-                                  .where((element) =>
-                                      element.uuid == widget.position?.uuid)
-                                  .first
-                                  .required ??
-                              false,
-                        )
-                      ],
-                    )
-                  : const SizedBox(),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
