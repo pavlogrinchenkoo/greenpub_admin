@@ -5,6 +5,7 @@ import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/api/firestore_shared/request.dart';
 import 'package:delivery/api/firestore_tags/request.dart';
 import 'package:delivery/api/firestore_user/request.dart';
+import 'package:delivery/api/positions/request.dart';
 import 'package:delivery/api/system/request.dart';
 import 'package:delivery/firebase_options.dart';
 import 'package:delivery/screens/add_product_page/bloc/bloc.dart';
@@ -14,7 +15,6 @@ import 'package:delivery/screens/order_page/bloc/bloc.dart';
 import 'package:delivery/screens/orders_page/bloc/bloc.dart';
 import 'package:delivery/screens/products_page/bloc/bloc.dart';
 import 'package:delivery/screens/shares_page/bloc/bloc.dart';
-import 'package:delivery/screens/show_position/bloc/bloc.dart';
 import 'package:delivery/screens/splash_page/bloc/bloc.dart';
 import 'package:delivery/screens/statistics/bloc/bloc.dart';
 import 'package:delivery/screens/system_page/bloc/bloc.dart';
@@ -29,6 +29,8 @@ import 'package:provider/provider.dart';
 import 'generated/l10n.dart';
 import 'routers/routes.dart';
 import 'screens/orders_page/widgets/show_product/bloc/bloc.dart';
+import 'screens/position_page/bloc/bloc.dart';
+import 'screens/positions_page/bloc/bloc.dart';
 import 'screens/product_page/bloc/bloc.dart';
 import 'style.dart';
 
@@ -56,6 +58,7 @@ class _AppState extends State<App> {
   final FirestoreTagsApi _firestoreTagsApi = FirestoreTagsApi();
   final SharedApi _sharedApi = SharedApi();
   final SystemApi _systemApi = SystemApi();
+  final PositionApi _positionApi = PositionApi();
   final Cache _cache = Cache();
 
   @override
@@ -83,11 +86,12 @@ class _AppState extends State<App> {
                 _firestoreApi, _firestoreOrdersApi, _firestoreProductApi),
           ),
           BlocProvider(
-            create: (_) => ProductsCubit(_firestoreProductApi, _cache, _firestoreCategoryApi),
+            create: (_) => ProductsCubit(
+                _firestoreProductApi, _cache, _firestoreCategoryApi),
           ),
           BlocProvider(
             create: (_) => ProductCubit(_firestoreProductApi,
-                _firestoreCategoryApi, _firestoreTagsApi, _cache),
+                _firestoreCategoryApi, _firestoreTagsApi, _cache, _positionApi),
           ),
           BlocProvider(
             create: (_) => AddProductCubit(
@@ -103,8 +107,8 @@ class _AppState extends State<App> {
             create: (_) => SharesCubit(_sharedApi),
           ),
           BlocProvider(
-            create: (_) => ShowProductCubit(
-                _firestoreProductApi, _firestoreOrdersApi, _firestoreApi, _cache),
+            create: (_) => ShowProductCubit(_firestoreProductApi,
+                _firestoreOrdersApi, _firestoreApi, _cache),
           ),
           BlocProvider(
             create: (_) => SystemCubit(_systemApi),
@@ -113,7 +117,10 @@ class _AppState extends State<App> {
             create: (_) => StatisticsCubit(_firestoreOrdersApi),
           ),
           BlocProvider(
-            create: (_) => ShowPositionCubit(_firestoreProductApi),
+            create: (_) => PositionCubit(_positionApi, _firestoreProductApi),
+          ),
+          BlocProvider(
+            create: (_) => PositionsCubit(_positionApi),
           ),
         ],
         child: MaterialApp.router(

@@ -1,11 +1,7 @@
 import 'package:auto_route/annotations.dart';
-import 'package:delivery/api/firestore_category/dto.dart';
-import 'package:delivery/api/firestore_product/dto.dart';
-import 'package:delivery/api/firestore_tags/dto.dart';
 import 'package:delivery/screens/add_product_page/page.dart';
 import 'package:delivery/screens/product_page/bloc/bloc.dart';
 import 'package:delivery/screens/product_page/bloc/state.dart';
-import 'package:delivery/screens/show_position/show_pisition.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
 import 'package:delivery/widgets/custom_appbar.dart';
@@ -13,7 +9,6 @@ import 'package:delivery/widgets/custom_buttom.dart';
 import 'package:delivery/widgets/custom_indicator.dart';
 import 'package:delivery/widgets/custom_scaffold.dart';
 import 'package:delivery/widgets/custom_text_field.dart';
-import 'package:delivery/widgets/selected_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -331,15 +326,32 @@ class _ProductPageState extends State<ProductPage> {
                                       borderRadius: BRadius.r16,
                                       color: BC.white,
                                     ),
-                                    child: ListView.builder(
-                                        itemCount: _bloc.positions.length,
-                                        itemBuilder: (context, index) {
-                                          final position =
-                                              _bloc.positions[index];
-                                          return PositionsGroup(
-                                            position: position,
-                                          );
-                                        }),
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: ListView.builder(
+                                              itemCount: _bloc.positions.length,
+                                              itemBuilder: (context, index) {
+                                                final position =
+                                                    _bloc.positions[index];
+                                                return PositionsGroup(
+                                                  position: position,
+                                                );
+                                              }),
+                                        ),
+                                        Space.h16,
+                                        CustomButton(
+                                            onTap: () => _bloc.showDialogPosition(context),
+                                            icon: Text(
+                                                'Додати опції',
+                                                style: BS.bold14.apply(
+                                                  color: BC.white,
+                                                )
+                                            )
+                                        ),
+
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
@@ -418,13 +430,6 @@ class _ProductPageState extends State<ProductPage> {
                           ],
                         ),
                         Space.h32,
-                        CustomButton(
-                          onTap: () => _bloc.showPosition(context, null),
-                          icon: Text(
-                            'Показати позиціЇ',
-                            style: BS.bold14.apply(color: BC.white),
-                          ),
-                        )
                       ],
                     ),
                   ),

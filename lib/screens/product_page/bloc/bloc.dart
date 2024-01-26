@@ -8,7 +8,9 @@ import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_product/request.dart';
 import 'package:delivery/api/firestore_tags/dto.dart';
 import 'package:delivery/api/firestore_tags/request.dart';
-import 'package:delivery/screens/show_position/show_pisition.dart';
+import 'package:delivery/api/positions/dto.dart';
+import 'package:delivery/api/positions/request.dart';
+import 'package:delivery/screens/product_page/widgets/show_dialog_position.dart';
 import 'package:delivery/screens/products_page/bloc/bloc.dart';
 import 'package:delivery/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +23,10 @@ class ProductCubit extends Cubit<ProductState> {
   final FirestoreCategoryApi firestoreCategoryApi;
   final FirestoreTagsApi firestoreTagsApi;
   final Cache cache;
+  final PositionApi positionApi;
 
   ProductCubit(this.firestoreApi, this.firestoreCategoryApi,
-      this.firestoreTagsApi, this.cache)
+      this.firestoreTagsApi, this.cache, this.positionApi)
       : super(LoadingState());
 
   ProductModel? product;
@@ -36,6 +39,7 @@ class ProductCubit extends Cubit<ProductState> {
   CategoryModel? category;
   bool isShow = true;
   List<PositionGroupModel> positions = [];
+  List<PositionGroupModel> positionGroups = [];
 
   Future<void> init(BuildContext context, String? id) async {
     try {
@@ -44,6 +48,8 @@ class ProductCubit extends Cubit<ProductState> {
       final product = await firestoreApi.getProductData(id ?? '');
       final tagsList = await firestoreTagsApi.getTagsList();
       final categoryList = await firestoreCategoryApi.getCategoriesList();
+      final getAllPositions = await positionApi.getPositionsList();
+      positionGroups = getAllPositions;
       this.tagsList = tagsList;
       this.categoryList = categoryList;
       this.product = product;
@@ -203,20 +209,6 @@ class ProductCubit extends Cubit<ProductState> {
         tagsList: tagsList));
   }
 
-  void showPosition(BuildContext context, PositionGroupModel? position) {
-    showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel: '',
-        barrierColor: Colors.black.withOpacity(0.5),
-        transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (pageContext, _, __) {
-          return  Material(child: ShowPosition(
-            positionGroup: position,
-          ));
-        });
-  }
-
   void removePosition(String? name) {
     positions.removeWhere((element) => element.name == name);
     emit(LoadedState(
@@ -254,6 +246,35 @@ class ProductCubit extends Cubit<ProductState> {
 
   dispose() {
     positions.clear();
+    positionGroups.clear();
+  }
+
+  void addPosition(PositionGroupModel? position) {
+    positions.add(position!);
+
+    emit(LoadedState(
+        product: product,
+        image: image,
+        imagePath: imagePath,
+        categoryList: categoryList,
+        tagsList: tagsList
+    ));
+  }
+
+
+ void showDialogPosition(BuildContext context) {
+    print(positionGroups.length);
+    if (context.mounted) {
+      showGeneralDialog(
+          context: context,
+          barrierDismissible: true,
+          barrierLabel: '',
+          barrierColor: Colors.black.withOpacity(0.5),
+          transitionDuration: const Duration(milliseconds: 300),
+          pageBuilder: (pageContext, _, __) {
+            return  Material(child: ShowPosition(position: positionGroups));
+          });
+    }
   }
 
   void back(BuildContext context) {

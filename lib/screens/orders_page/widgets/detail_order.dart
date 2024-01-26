@@ -1,4 +1,5 @@
 import 'package:delivery/api/firestore_orders/dto.dart';
+import 'package:delivery/api/firestore_user/dto.dart';
 import 'package:delivery/screens/orders_page/bloc/bloc.dart';
 import 'package:delivery/screens/orders_page/widgets/product_item.dart';
 import 'package:delivery/style.dart';
@@ -10,9 +11,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class DetailOrder extends StatelessWidget {
+  final UserModel? user;
   final OrderModel order;
 
-  const DetailOrder({super.key, required this.order});
+  const DetailOrder({super.key, required this.order, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,15 @@ class DetailOrder extends StatelessWidget {
           Text(
             'Користувач: ${order.userId}',
           ),
+          Space.h8,
+          Row(
+            children: [
+              Text('Ім\'я: ${user?.firstName ?? ''}'),
+              Space.w16,
+              Text('Номер телефону: ${user?.phone ?? ''}'),
+            ],
+          ),
+
           Space.h8,
           Row(
             children: [
@@ -299,7 +310,7 @@ class DetailOrder extends StatelessWidget {
             ],
           ),
           Space.h8,
-           Text(
+          Text(
             'Товари:',
             style: BS.sb14,
           ),

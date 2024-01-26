@@ -51,6 +51,23 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const OrdersPage(),
       );
     },
+    PositionRoute.name: (routeData) {
+      final args = routeData.argsAs<PositionRouteArgs>(
+          orElse: () => const PositionRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: PositionPage(
+          key: args.key,
+          position: args.position,
+        ),
+      );
+    },
+    PositionsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const PositionsPage(),
+      );
+    },
     ProductRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<ProductRouteArgs>(
@@ -216,6 +233,58 @@ class OrdersRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'OrdersRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [PositionPage]
+class PositionRoute extends PageRouteInfo<PositionRouteArgs> {
+  PositionRoute({
+    Key? key,
+    PositionGroupModel? position,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PositionRoute.name,
+          args: PositionRouteArgs(
+            key: key,
+            position: position,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'PositionRoute';
+
+  static const PageInfo<PositionRouteArgs> page =
+      PageInfo<PositionRouteArgs>(name);
+}
+
+class PositionRouteArgs {
+  const PositionRouteArgs({
+    this.key,
+    this.position,
+  });
+
+  final Key? key;
+
+  final PositionGroupModel? position;
+
+  @override
+  String toString() {
+    return 'PositionRouteArgs{key: $key, position: $position}';
+  }
+}
+
+/// generated route for
+/// [PositionsPage]
+class PositionsRoute extends PageRouteInfo<void> {
+  const PositionsRoute({List<PageRouteInfo>? children})
+      : super(
+          PositionsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PositionsRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

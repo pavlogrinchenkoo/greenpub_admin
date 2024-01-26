@@ -1,6 +1,7 @@
 import 'package:delivery/api/firestore_product/dto.dart';
+import 'package:delivery/api/positions/dto.dart';
+import 'package:delivery/screens/position_page/bloc/bloc.dart';
 import 'package:delivery/screens/product_page/bloc/bloc.dart';
-import 'package:delivery/screens/show_position/bloc/bloc.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
 import 'package:delivery/widgets/selected_button.dart';
@@ -19,12 +20,12 @@ class CustomSauceItem extends StatefulWidget {
 class _CustomSauceItemState extends State<CustomSauceItem> {
   @override
   Widget build(BuildContext context) {
-    final _bloc = context.read<ShowPositionCubit>();
+    final _bloc = context.read<PositionCubit>();
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: BC.beige,
+        color: BC.white,
         borderRadius: BRadius.r10,
       ),
       child: Row(
@@ -53,28 +54,6 @@ class _CustomSauceItemState extends State<CustomSauceItem> {
                     setState(() {});
                   },
                   icon: const Icon(Icons.delete)),
-              Space.h8,
-              Row(
-                children: [
-                  Text(
-                    'Обовязковй',
-                    style: BS.sb14,
-                  ),
-                  Space.w8,
-                  SelectedButton(
-                    onTap: () {
-                      _bloc.editSauce(widget.position?.uuid);
-                      setState(() {});
-                    },
-                    isSelected: _bloc.positions
-                            ?.where((element) =>
-                                element.uuid == widget.position?.uuid)
-                            .first
-                            .required ??
-                        false,
-                  )
-                ],
-              ),
             ],
           ),
         ],

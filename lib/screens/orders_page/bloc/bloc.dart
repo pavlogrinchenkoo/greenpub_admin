@@ -3,6 +3,7 @@ import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:delivery/api/firestore_orders/request.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/api/firestore_product/request.dart';
+import 'package:delivery/api/firestore_user/dto.dart';
 import 'package:delivery/api/firestore_user/request.dart';
 import 'package:delivery/routers/routes.dart';
 import 'package:delivery/screens/orders_page/widgets/show_product/show_product.dart';
@@ -10,7 +11,6 @@ import 'package:delivery/screens/products_page/page.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/widgets/custom_show_dialog.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'state.dart';
@@ -33,6 +33,7 @@ class OrdersCubit extends Cubit<OrdersState> {
   String payType = '';
   String deliveryStatus = '';
   String deliveryType = '';
+  UserModel? user;
 
   Future<void> init(BuildContext context) async {
     try {
@@ -44,13 +45,20 @@ class OrdersCubit extends Cubit<OrdersState> {
       deliveryStatus = orders.first.statusType ?? '';
       deliveryType = orders.first.deliveryType ?? '';
       await getImage(orders.first.items ?? []);
+     await getUser(0);
       emit(LoadedState(
         order: orders,
         selectedOrder: orders.first,
+        user: user,
       ));
     } catch (e) {
       emit(ErrorState());
     }
+  }
+
+  Future<void> getUser(int index) async {
+    final user = await firestoreApi.getUserData(orders[index].userId ?? '');
+    this.user = user;
   }
 
   void showAddProductModal(BuildContext context) async {
@@ -93,19 +101,25 @@ class OrdersCubit extends Cubit<OrdersState> {
     payType = orders[index].payType ?? '';
     deliveryStatus = orders[index].statusType ?? '';
     deliveryType = orders[index].deliveryType ?? '';
+    await getUser(index);
     emit(LoadedState(
       order: orders,
       selectedOrder: orders[index],
+      user: user,
     ));
+  }
+
+  Future<void> addPoints() async {
+    if (deliveryStatus == 'delivered') {
+      await firestoreApi.editPoints(user?.uid ?? '', 2);
+    }
   }
 
   void saveOrder(OrderModel order, BuildContext context) async {
     try {
       await endEdit();
       final uid = order.uid;
-      if (deliveryStatus == 'delivered') {
-        // await firestoreApi
-      }
+
       if (deliveryStatus == 'cancelled') {
         // await firestoreApi
       }

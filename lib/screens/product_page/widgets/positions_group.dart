@@ -1,4 +1,5 @@
 import 'package:delivery/api/firestore_product/dto.dart';
+import 'package:delivery/api/positions/dto.dart';
 import 'package:delivery/screens/product_page/bloc/bloc.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
@@ -26,10 +27,6 @@ class PositionsGroup extends StatelessWidget {
                 onTap: () => _bloc.changeRequired(position),
                 isSelected: position?.required ?? false),
             Space.w16,
-            CustomButton(
-              onTap: () => _bloc.showPosition(context, position),
-              icon: Text('Змінити', style: BS.bold14.apply(color: BC.white)),
-            ),
             const Spacer(),
             IconButton(onPressed: () => _bloc.removePosition(position?.name), icon: const Icon(Icons.delete)),
           ],
@@ -48,15 +45,16 @@ class PositionsGroup extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${item.name}', style: BS.bold16),
-                        Space.h8,
-                        Text('${item.price} грн', style: BS.sb14),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${item.name}', style: BS.bold16, maxLines: 2, overflow: TextOverflow.ellipsis),
+                          Space.h8,
+                          Text('${item.price} грн', style: BS.sb14),
+                        ],
+                      ),
                     ),
-                    const Spacer(),
                   ],
                 ),
               )

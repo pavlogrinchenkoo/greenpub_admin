@@ -89,12 +89,15 @@ class AddProductCubit extends Cubit<AddProductState> {
       bool? isPromo,
       String? imagePath,
       String? uuid,
-      List<TagModel>? tags}) async {
+      List<TagModel>? tags,
+        String? filterOrders
+      }) async {
     try {
       final dTime = DateTime.now();
       final numPrice = double.tryParse(price ?? '0') ?? 0;
       final numNewPrice = double.tryParse(newPrice ?? '0') ?? 0;
       // final numWeight = int.tryParse(weight ?? '0') ?? 0;
+      final filterOrdersInt = int.tryParse(filterOrders ?? '0') ?? 0;
       final time = '${dTime.day}.${dTime.month}.${dTime.year}';
       final product = ProductModel(
         uuid: uuid,
@@ -109,6 +112,7 @@ class AddProductCubit extends Cubit<AddProductState> {
         tags: tags,
         image: imagePath,
         isShow: true,
+        filterOrders: filterOrdersInt
       );
       emit(LoadingState());
       await firestoreApi.addProduct(product);

@@ -19,6 +19,7 @@ class OrderModel {
   double? totalPrice;
   final String? comment;
   final int? spentPoints;
+  final int? deliveryPrice;
 
   OrderModel(
       {this.uid,
@@ -33,7 +34,8 @@ class OrderModel {
       this.discount,
       this.totalPrice,
       this.comment,
-      this.spentPoints});
+      this.spentPoints,
+      this.deliveryPrice});
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>
       _$OrderModelFromJson(json);

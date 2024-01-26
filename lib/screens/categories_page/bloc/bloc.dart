@@ -20,7 +20,7 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   bool isShowTextField = false;
   List<CategoryModel> categories = [];
-  List<Uint8List?> images = [];
+  // List<Uint8List?> images = [];
   String? imagePath;
   Uint8List? image;
   String? uid;
@@ -38,14 +38,16 @@ class CategoryCubit extends Cubit<CategoryState> {
     try {
       final categoriesList = await categoriesApi.getCategoriesList();
       categories = categoriesList;
-      images.clear();
-      for (final category in categories) {
-        final image = category.image;
-        final getImage = await categoriesApi.getImage(image ?? '');
-
-        images.add(getImage);
-      }
-      emit(LoadedState(categories: categoriesList, images: images));
+      // images.clear();
+      // for (final category in categories) {
+      //   final image = category.image;
+      //   final getImage = await categoriesApi.getImage(image ?? '');
+      //
+      //   images.add(getImage);
+      // }
+      emit(LoadedState(categories: categoriesList,
+          // images: images
+      ));
     } catch (e) {
       emit(ErrorState());
     }
@@ -57,7 +59,9 @@ class CategoryCubit extends Cubit<CategoryState> {
     uid = null;
     isShowTextField = true;
     uid = uuid.v1();
-    emit(LoadedState(categories: categories, images: images, uuid: uid));
+    emit(LoadedState(categories: categories,
+        // images: images,
+        uuid: uid));
   }
 
   Future<void> addCategory(String category, BuildContext context,
@@ -156,7 +160,9 @@ class CategoryCubit extends Cubit<CategoryState> {
     final imagePath = await categoriesApi.saveImage(pickedFile, uid ?? '');
     image = pickedFile;
     this.imagePath = imagePath;
-    emit(LoadedState(categories: categories, images: images));
+    emit(LoadedState(categories: categories,
+        // images: images
+    ));
   }
 
   Future<void> editImage(String? uid) async {

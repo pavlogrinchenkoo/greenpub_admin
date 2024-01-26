@@ -6,7 +6,27 @@ part of 'dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
+PositionGroupModel _$PositionGroupModelFromJson(Map<String, dynamic> json) =>
+    PositionGroupModel(
+      uuid: json['uuid'] as String?,
+      name: json['name'] as String?,
+      positions: (json['positions'] as List<dynamic>?)
+          ?.map((e) => ProductModelPosition.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      required: json['required'] as bool?,
+    );
+
+Map<String, dynamic> _$PositionGroupModelToJson(PositionGroupModel instance) =>
+    <String, dynamic>{
+      'uuid': instance.uuid,
+      'name': instance.name,
+      'positions': instance.positions,
+      'required': instance.required,
+    };
+
+ProductModelPosition _$ProductModelPositionFromJson(
+        Map<String, dynamic> json) =>
+    ProductModelPosition(
       uuid: json['uuid'] as String?,
       oldPrice: (json['oldPrice'] as num?)?.toDouble(),
       price: (json['price'] as num?)?.toDouble(),
@@ -22,14 +42,11 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
       description: json['description'] as String?,
       weight: json['weight'] as String?,
       timeCreate: json['timeCreate'] as String?,
-      isShow: json['isShow'] as bool? ?? true,
-      filterOrders: json['filterOrders'] as int? ?? 0,
-      positions: (json['positions'] as List<dynamic>?)
-          ?.map((e) => PositionGroupModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      required: json['required'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
+Map<String, dynamic> _$ProductModelPositionToJson(
+        ProductModelPosition instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
       'oldPrice': instance.oldPrice,
@@ -42,7 +59,5 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
       'description': instance.description,
       'weight': instance.weight,
       'timeCreate': instance.timeCreate,
-      'isShow': instance.isShow,
-      'filterOrders': instance.filterOrders,
-      'positions': instance.positions,
+      'required': instance.required,
     };

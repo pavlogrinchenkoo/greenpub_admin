@@ -1,8 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:delivery/api/firestore_product/dto.dart';
+import 'package:delivery/api/positions/dto.dart';
 import 'package:delivery/screens/add_product_page/page.dart';
 import 'package:delivery/screens/auth/login_page/page.dart';
 import 'package:delivery/screens/categories_page/page.dart';
 import 'package:delivery/screens/order_page/page.dart';
+import 'package:delivery/screens/position_page/page.dart';
+import 'package:delivery/screens/positions_page/page.dart';
 import 'package:delivery/screens/product_page/page.dart';
 import 'package:delivery/screens/products_page/page.dart';
 import 'package:delivery/screens/shares_page/page.dart';
@@ -33,11 +37,13 @@ class AppRouter extends _$AppRouter {
       AutoRoute(path: 'shares', page: SharesRoute.page),
       AutoRoute(path: 'system', page: SystemRoute.page),
       AutoRoute(path: 'statistics', page: StatisticsRoute.page),
+      AutoRoute(path: 'positions', page: PositionsRoute.page),
     ]),
     AutoRoute(path: '/user/:uid', page: UserRoute.page),
     AutoRoute(path: '/order/:uid', page: OrderRoute.page),
     AutoRoute(path: '/product/:id', page: ProductRoute.page),
     AutoRoute(path: '/add-product', page: AddProductRoute.page),
+    AutoRoute(path: '/position', page: PositionRoute.page),
   ];
 }
 

@@ -33,6 +33,7 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController controllerDescription = TextEditingController();
   TextEditingController controllerWeight = TextEditingController();
   TextEditingController controllerTimeCreate = TextEditingController();
+  TextEditingController controllerFilterOrders = TextEditingController();
   late AddProductCubit _bloc;
 
   @override
@@ -126,6 +127,8 @@ class _AddProductPageState extends State<AddProductPage> {
                                     tags: _bloc.tags,
                                     uuid: controllerUUID.text,
                                     imagePath: state.imagePath,
+                                    filterOrders: controllerFilterOrders.text,
+
                                   ),
                                   icon: Text('Додати продукт',
                                       style: BS.bold14.apply(color: BC.beige)),
@@ -283,6 +286,36 @@ class _AddProductPageState extends State<AddProductPage> {
                                                             color: BC.white)),
                                                   ),
                                                 ),
+                                        ),
+                                      ],
+                                    ),
+                                    Space.h8,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Приоритет',
+                                          style: BS.light14.apply(color: BC.black),
+                                        ),
+                                        Space.h8,
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BRadius.r16,
+                                            border: Border.all(color: BC.black),
+                                          ),
+                                          child: TextField(
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly,
+                                                LengthLimitingTextInputFormatter(4),
+                                              ],
+                                              controller: controllerFilterOrders,
+                                              decoration: const InputDecoration(
+                                                hintText: 'Пріоритет',
+                                                border: InputBorder.none,
+                                              )),
                                         ),
                                       ],
                                     ),

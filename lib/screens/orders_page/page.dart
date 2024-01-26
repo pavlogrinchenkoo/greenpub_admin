@@ -1,21 +1,11 @@
-import 'dart:typed_data';
-
 import 'package:auto_route/annotations.dart';
-import 'package:delivery/api/firestore_orders/dto.dart';
-import 'package:delivery/api/firestore_product/dto.dart';
 import 'package:delivery/screens/orders_page/bloc/bloc.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
-import 'package:delivery/widgets/custom_buttom.dart';
 import 'package:delivery/widgets/custom_indicator.dart';
 import 'package:delivery/widgets/custom_scaffold.dart';
-import 'package:delivery/widgets/delivery_status_widget.dart';
-import 'package:delivery/widgets/item_count_button.dart';
-import 'package:delivery/widgets/order_price_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:intl/intl.dart';
 
 import 'bloc/state.dart';
 import 'widgets/detail_order.dart';
@@ -85,6 +75,7 @@ class _OrdersPageState extends State<OrdersPage> {
               Expanded(
                 flex: 2,
                 child: DetailOrder(
+                  user: state.user,
                   order: state.selectedOrder!,
                 ),
               ),

@@ -23,9 +23,11 @@ class _SideBarPageState extends State<SideBarPage> {
         ProductsRoute(),
         CategoriesRoute(),
         TagsRoute(),
+        PositionsRoute(),
         SharesRoute(),
         SystemRoute(),
         StatisticsRoute(),
+
       ],
       bodyBuilder: (_, tabsRouter) {
         return Row(
@@ -69,6 +71,10 @@ class _SideBarPageState extends State<SideBarPage> {
                   label: 'Теги',
                 ),
                 SideNavigationBarItem(
+                  icon: Icons.format_list_bulleted,
+                  label: 'Позиції',
+                ),
+                SideNavigationBarItem(
                   icon: Icons.share,
                   label: 'Акції',
                 ),
@@ -80,6 +86,7 @@ class _SideBarPageState extends State<SideBarPage> {
                   icon: Icons.analytics_outlined,
                   label: 'Статистика',
                 ),
+
               ],
               onTap: (index) {
                 setState(() {
