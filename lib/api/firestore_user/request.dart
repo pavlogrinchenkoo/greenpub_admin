@@ -91,9 +91,26 @@ class FirestoreUserApi {
 
   Future<void> editPoints(String uid, int points) async {
     try {
+      final getUser = await getUserData(uid);
+      final userPoints = getUser?.points ?? 0;
+      final newPoints = userPoints + points;
       DocumentReference userDoc = userCollection.doc(uid);
       await userDoc.update({
-        'points': points
+        'points': newPoints
+      });
+    } catch (e) {
+      print('Error deleting user account: $e');
+    }
+  }
+
+  Future<void> editPointsRemove(String uid, int points) async {
+    try {
+      final getUser = await getUserData(uid);
+      final userPoints = getUser?.points ?? 0;
+      final newPoints = userPoints - points;
+      DocumentReference userDoc = userCollection.doc(uid);
+      await userDoc.update({
+        'points': newPoints
       });
     } catch (e) {
       print('Error deleting user account: $e');

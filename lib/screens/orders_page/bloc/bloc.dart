@@ -45,7 +45,7 @@ class OrdersCubit extends Cubit<OrdersState> {
       deliveryStatus = orders.first.statusType ?? '';
       deliveryType = orders.first.deliveryType ?? '';
       await getImage(orders.first.items ?? []);
-     await getUser(0);
+      await  getUser(0);
       emit(LoadedState(
         order: orders,
         selectedOrder: orders.first,
@@ -110,8 +110,29 @@ class OrdersCubit extends Cubit<OrdersState> {
   }
 
   Future<void> addPoints() async {
+    final order = orders[index];
     if (deliveryStatus == 'delivered') {
-      await firestoreApi.editPoints(user?.uid ?? '', 2);
+      final items = order.items
+          ?.where((element) =>
+              element.product?.oldPrice == null ||
+              element.product?.oldPrice == 0)
+          .toList();
+      final price = items?.fold(0.0, (previousValue, element) {
+        return previousValue + (element.product?.price ?? 0);
+      });
+
+      if (deliveryType == 'Курєром') {
+        print(price);
+        final points = (price ?? 0) * 0.05;
+        print(points);
+        final priceInPoints = points.toInt();
+        await firestoreApi.editPoints(user?.uid ?? '', priceInPoints);
+      } else {
+        final points = (price ?? 0) * 0.1;
+        final priceInPoints = points.toInt() ?? 0;
+        await firestoreApi.editPoints(user?.uid ?? '', priceInPoints);
+      }
+      await firestoreApi.editPointsRemove(user?.uid ?? '', order.spentPoints ?? 0);
     }
   }
 
@@ -119,10 +140,10 @@ class OrdersCubit extends Cubit<OrdersState> {
     try {
       await endEdit();
       final uid = order.uid;
-
-      if (deliveryStatus == 'cancelled') {
-        // await firestoreApi
-      }
+      print(order.deliveryPrice);
+      final totalPrice = (order.totalPrice ?? 0) + (order.deliveryPrice ?? 0);
+      print(totalPrice);
+      final deliveryType = order.deliveryType ?? '';
       final newOrder = OrderModel(
         uid: uid,
         userId: order.userId,
@@ -133,9 +154,11 @@ class OrdersCubit extends Cubit<OrdersState> {
         address: order.address,
         comment: order.comment,
         timeCreate: order.timeCreate,
-        totalPrice: order.totalPrice,
+        totalPrice: totalPrice,
         discount: order.discount,
         price: order.price,
+        spentPoints: order.spentPoints,
+        deliveryPrice: order.deliveryPrice,
       );
       await firestoreOrdersApi.editOrder(uid ?? '', newOrder);
       isEdit = false;
@@ -145,7 +168,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     }
   }
 
-  void saveStatus(OrderModel order, String status) async {}
+  // void saveStatus(OrderModel order, String status) async {}
 
   void selectDeliveryType(String type) {
     if (isEdit) {
@@ -184,6 +207,7 @@ class OrdersCubit extends Cubit<OrdersState> {
                     order: orders,
                     selectedOrder: orders[index],
                   ));
+                  addPoints();
                 },
                 onTapTwo: () {
                   context.router.pop();
@@ -348,7 +372,7 @@ class OrdersCubit extends Cubit<OrdersState> {
           price = price + totalPrice;
         }
       }
-      orderTotalPrice = orderTotalPrice + (spentPoints ?? 0);
+      orderTotalPrice = orderTotalPrice - (spentPoints ?? 0);
       discount = price - orderTotalPrice;
       if (deliveryType == 'Самовивіз') {
         orderTotalPrice = orderTotalPrice * 0.9;

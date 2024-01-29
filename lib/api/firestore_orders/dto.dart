@@ -20,6 +20,7 @@ class OrderModel {
   final String? comment;
   final int? spentPoints;
   final int? deliveryPrice;
+  final String? deliveryTime;
 
   OrderModel(
       {this.uid,
@@ -35,7 +36,8 @@ class OrderModel {
       this.totalPrice,
       this.comment,
       this.spentPoints,
-      this.deliveryPrice});
+      this.deliveryPrice,
+      this.deliveryTime});
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>
       _$OrderModelFromJson(json);
@@ -88,7 +90,9 @@ class ImageModel {
   factory ImageModel.fromJson(Map<String, dynamic> json) {
     return ImageModel(
       path: json['path'] as String?,
-      bytes: json['bytes'] != null ? Uint8List.fromList(List<int>.from(json['bytes'])) : null,
+      bytes: json['bytes'] != null
+          ? Uint8List.fromList(List<int>.from(json['bytes']))
+          : null,
     );
   }
 

@@ -145,36 +145,6 @@ class DetailOrder extends StatelessWidget {
               onTap: () => _bloc.selectPayType('Google Pay'),
             ),
           ]),
-          // FormBuilderChoiceChip(
-          //   onChanged: (value) => _bloc.selectPayType(value ?? ''),
-          //   initialValue: order.payType,
-          //   name: 'choice_chip',
-          //   spacing: 16,
-          //   runSpacing: 16,
-          //   selectedColor: BC.white,
-          //   backgroundColor: BC.grey,
-          //   decoration: const InputDecoration(
-          //     border: InputBorder.none,
-          //   ),
-          //   options: const [
-          //     FormBuilderChipOption(
-          //       value: 'Готівкою',
-          //       child: Text('Готівкою'),
-          //     ),
-          //     FormBuilderChipOption(
-          //       value: 'Карткою при отримані',
-          //       child: Text('Картою'),
-          //     ),
-          //     FormBuilderChipOption(
-          //       value: 'Apple Pay',
-          //       child: Text('Apple Pay'),
-          //     ),
-          //     FormBuilderChipOption(
-          //       value: 'Google Pay',
-          //       child: Text('Google Pay'),
-          //     ),
-          //   ],
-          // ),
           Space.h8,
           Text(
             'Тип доставки',
@@ -280,6 +250,7 @@ class DetailOrder extends StatelessWidget {
           // ),
           Space.h8,
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,15 +269,23 @@ class DetailOrder extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Знижка: ${order.discount}₴',
+                    'Знижка: ${order.discount ?? 0}₴',
                   ),
                   Space.h8,
                   Text(
-                    'Бали: ${order.spentPoints}₴',
+                    'Бали: ${order.spentPoints ?? 0}₴',
                   ),
                 ],
               ),
               Space.w22,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Доставка: ${order.deliveryPrice ?? 0}₴',
+                  ),
+                ],
+              ),
             ],
           ),
           Space.h8,
