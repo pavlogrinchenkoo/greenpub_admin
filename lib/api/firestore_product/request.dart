@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery/api/firestore_orders/dto.dart';
 import 'package:delivery/api/firestore_product/dto.dart';
+import 'package:delivery/api/positions/dto.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 
@@ -113,6 +114,31 @@ class FirestoreProductApi {
     }
   }
 
+  Future<List<ProductModelPosition>> getProductsOption(List<String> uuids) async {
+    try {
+      QuerySnapshot productsSnapshot = await productCollection
+          .where('uuid', whereIn: uuids)
+          .get();
+
+      List<ProductModelPosition> productsList = [];
+
+      for (QueryDocumentSnapshot productsDoc in productsSnapshot.docs) {
+        if (productsDoc.exists) {
+          final productsData =
+          ProductModelPosition.fromJson(productsDoc.data() as Map<String, dynamic>);
+          productsList.add(productsData);
+        }
+      }
+
+      print('products list: $productsList');
+      return productsList;
+    } catch (e) {
+      print('Error getting products list: $e');
+      return [];
+    }
+  }
+
+
   Future<ProductModel?> getProductData(String uid) async {
     try {
       DocumentSnapshot productDoc = await productCollection.doc(uid).get();
@@ -130,20 +156,12 @@ class FirestoreProductApi {
     }
   }
 
-  Future<ImageModel?> getImage(String name) async {
+  Future<String?> getImage(String name) async {
     final Reference storageRef = FirebaseStorage.instance.ref();
     final imageRef = storageRef.child(name);
     try {
-      final image = await imageRef.getData();
-      if (image != null) {
-        List<int> imageBytes = image.toList();
-        String base64Image = base64Encode(imageBytes);
-      }
-      final imageModel = ImageModel(
-        bytes: image,
-        path: name,
-      );
-      return imageModel;
+      final image = await imageRef.getDownloadURL();
+      return image;
     } catch (e) {
       print("Помилка при отриманні даних з Firebase: $e");
       return null;

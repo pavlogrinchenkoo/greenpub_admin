@@ -36,7 +36,7 @@ class _OrdersPageState extends State<OrdersPage> {
         return const CustomIndicator();
       }
       if (state is LoadedState) {
-        final order = state.order![_bloc.index];
+        // final order = state.order![_bloc.index];
         return CustomScaffold(
           body: Row(
             children: [

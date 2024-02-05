@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:auto_route/annotations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delivery/api/firestore_shared/dto.dart';
 import 'package:delivery/screens/shares_page/bloc/bloc.dart';
 import 'package:delivery/screens/shares_page/bloc/state.dart';
@@ -100,7 +101,7 @@ class _SharesPageState extends State<SharesPage> {
 
 class _SharesContainer extends StatelessWidget {
   final SharesModel shares;
-  final Uint8List? image;
+  final String? image;
 
   const _SharesContainer({super.key, required this.shares, this.image});
 
@@ -123,12 +124,15 @@ class _SharesContainer extends StatelessWidget {
                     height: 100,
                     color: BC.grey,
                   )
-                : Image.memory(
-                    image ?? Uint8List(0),
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  ),
+                : CachedNetworkImage(
+              imageUrl: image ?? '',
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  const CustomIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
           ),
           Space.w16,
           Expanded(
@@ -158,7 +162,7 @@ class _SharesContainer extends StatelessWidget {
 class _DetailContainer extends StatelessWidget {
   final TextEditingController controllerTitle;
   final TextEditingController controllerDescription;
-  final Uint8List? image;
+  final String? image;
 
   const _DetailContainer(
       {super.key,
@@ -196,12 +200,15 @@ class _DetailContainer extends StatelessWidget {
                             color: BC.grey,
                             child: const Icon(Icons.add_circle_outline),
                           )
-                        : Image.memory(
-                            _bloc.image ?? Uint8List(0),
-                            width: 400,
-                            height: 400,
-                            fit: BoxFit.cover,
-                          ),
+                        : CachedNetworkImage(
+                      imageUrl: image ?? '',
+                      progressIndicatorBuilder: (context, url, downloadProgress) =>
+                          const CustomIndicator(),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                      width: 400,
+                      height: 400,
+                      fit: BoxFit.cover,
+                    ),
                   )),
               Space.w16,
               Expanded(

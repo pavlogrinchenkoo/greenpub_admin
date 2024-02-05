@@ -7,8 +7,6 @@ import 'package:delivery/api/firestore_user/dto.dart';
 import 'package:delivery/api/firestore_user/request.dart';
 import 'package:delivery/routers/routes.dart';
 import 'package:delivery/screens/orders_page/widgets/show_product/show_product.dart';
-import 'package:delivery/screens/products_page/page.dart';
-import 'package:delivery/style.dart';
 import 'package:delivery/widgets/custom_show_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +25,7 @@ class OrdersCubit extends Cubit<OrdersState> {
   List<OrderModel> orders = [];
   bool isLoadMoreTriggered = false;
   bool isEdit = false;
-  int count = 0;
+  int count = 51;
   int index = 0;
   List<ImageModel?> images = [];
   String payType = '';
@@ -35,20 +33,20 @@ class OrdersCubit extends Cubit<OrdersState> {
   String deliveryType = '';
   UserModel? user;
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init(BuildContext context, {int selectedIndex = 0}) async {
     try {
       emit(LoadingState());
       final orders = await firestoreOrdersApi.getOrdersList(50);
-      print(orders.length);
-      this.orders.addAll(orders);
+      this.orders = [...orders];
+
       payType = orders.first.payType ?? '';
       deliveryStatus = orders.first.statusType ?? '';
       deliveryType = orders.first.deliveryType ?? '';
       await getImage(orders.first.items ?? []);
-      await  getUser(0);
+      await getUser(selectedIndex);
       emit(LoadedState(
         order: orders,
-        selectedOrder: orders.first,
+        selectedOrder: orders[selectedIndex],
         user: user,
       ));
     } catch (e) {
@@ -91,7 +89,11 @@ class OrdersCubit extends Cubit<OrdersState> {
     for (int i = 0, length = products.length; i < length; i++) {
       final getImage =
           await firestoreProductApi.getImage(products[i].product?.image ?? '');
-      images.add(getImage);
+      final image = ImageModel(
+        path: products[i].product?.image ?? '',
+        bytes: getImage,
+      );
+      images.add(image);
     }
   }
 
@@ -132,7 +134,8 @@ class OrdersCubit extends Cubit<OrdersState> {
         final priceInPoints = points.toInt() ?? 0;
         await firestoreApi.editPoints(user?.uid ?? '', priceInPoints);
       }
-      await firestoreApi.editPointsRemove(user?.uid ?? '', order.spentPoints ?? 0);
+      await firestoreApi.editPointsRemove(
+          user?.uid ?? '', order.spentPoints ?? 0);
     }
   }
 
@@ -162,7 +165,7 @@ class OrdersCubit extends Cubit<OrdersState> {
       );
       await firestoreOrdersApi.editOrder(uid ?? '', newOrder);
       isEdit = false;
-      if (context.mounted) init(context);
+      if (context.mounted) init(context, selectedIndex: index);
     } catch (e) {
       emit(ErrorState());
     }
@@ -217,20 +220,19 @@ class OrdersCubit extends Cubit<OrdersState> {
   }
 
   Future<void> getOrders() async {
-    if (isEdit) {
-      try {
-        if (count >= 50) {
-          final orders = await firestoreOrdersApi.getOrdersList(50);
-          this.orders.addAll(orders);
-          emit(LoadedState(
-            order: this.orders,
-            selectedOrder: orders.first,
-          ));
-          count = orders.length;
-        }
-      } catch (e) {
-        emit(ErrorState());
+    try {
+      if (count >= 49) {
+        final orders = await firestoreOrdersApi.getOrdersList(50);
+        this.orders.addAll([...orders]);
+        emit(LoadedState(
+          order: this.orders,
+          selectedOrder: orders.first,
+        ));
+        count = orders.length;
+        print(count);
       }
+    } catch (e) {
+      emit(ErrorState());
     }
   }
 
@@ -327,7 +329,11 @@ class OrdersCubit extends Cubit<OrdersState> {
           orders[index].items?.add(product);
           final getImage =
               await firestoreProductApi.getImage(product.product?.image ?? '');
-          images.add(getImage);
+          final image = ImageModel(
+            path: product.product?.image ?? '',
+            bytes: getImage
+          );
+          images.add(image);
         }
         for (final product in products) {
           final sumPrice = product.count! * (product.product?.price ?? 0);

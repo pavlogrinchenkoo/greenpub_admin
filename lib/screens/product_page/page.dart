@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delivery/screens/add_product_page/page.dart';
 import 'package:delivery/screens/product_page/bloc/bloc.dart';
 import 'package:delivery/screens/product_page/bloc/state.dart';
@@ -78,6 +79,8 @@ class _ProductPageState extends State<ProductPage> {
                   Expanded(
                     flex: 1,
                     child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
@@ -112,12 +115,18 @@ class _ProductPageState extends State<ProductPage> {
                                 )
                               : ClipRRect(
                                   borderRadius: BRadius.r16,
-                                  child: Image.memory(
-                                    state.image?.bytes ?? Uint8List(0),
+                                  child: CachedNetworkImage(
+                                    imageUrl: state.image ?? '',
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            const CustomIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
                                     width: 400,
                                     height: 400,
                                     fit: BoxFit.cover,
-                                  )),
+                                  ),
+                                ),
                         ),
                         Space.h32,
                         Padding(
@@ -125,7 +134,7 @@ class _ProductPageState extends State<ProductPage> {
                           child: Column(
                             children: [
                               CustomButton(
-                                onTap: () => _bloc.editProduct(
+                                onTap: () => _bloc.showDialogEdit(
                                   context,
                                   name: controllerName.text,
                                   price: controllerPrice.text,
@@ -147,7 +156,7 @@ class _ProductPageState extends State<ProductPage> {
                               ),
                               Space.h16,
                               CustomButton(
-                                onTap: () => _bloc.deleteProduct(context),
+                                onTap: () => _bloc.showDialogDelete(context),
                                 icon: Text('Видалити Продукт',
                                     style: BS.bold14.apply(color: BC.beige)),
                               ),
@@ -275,11 +284,13 @@ class _ProductPageState extends State<ProductPage> {
                                   Space.h16,
                                   Space.h8,
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Приоритет',
-                                        style: BS.light14.apply(color: BC.black),
+                                        style:
+                                            BS.light14.apply(color: BC.black),
                                       ),
                                       Space.h8,
                                       Container(
@@ -293,7 +304,8 @@ class _ProductPageState extends State<ProductPage> {
                                             inputFormatters: [
                                               FilteringTextInputFormatter
                                                   .digitsOnly,
-                                              LengthLimitingTextInputFormatter(4),
+                                              LengthLimitingTextInputFormatter(
+                                                  4),
                                             ],
                                             controller: controllerFilterOrders,
                                             decoration: const InputDecoration(
@@ -341,15 +353,12 @@ class _ProductPageState extends State<ProductPage> {
                                         ),
                                         Space.h16,
                                         CustomButton(
-                                            onTap: () => _bloc.showDialogPosition(context),
-                                            icon: Text(
-                                                'Додати опції',
+                                            onTap: () => _bloc
+                                                .showDialogPosition(context),
+                                            icon: Text('Додати опції',
                                                 style: BS.bold14.apply(
                                                   color: BC.white,
-                                                )
-                                            )
-                                        ),
-
+                                                ))),
                                       ],
                                     ),
                                   )

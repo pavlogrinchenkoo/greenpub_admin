@@ -48,12 +48,24 @@ class _SystemPageState extends State<SystemPage> {
                   value: '${state.system?.deliveryPrice} грн ',
                 ),
                 Space.h16,
-                CustomButton(
-                  onTap: () => _bloc.showEdit(context, state.system),
-                  icon: Text(
-                    'Редагувати',
-                    style: BS.bold18.apply(color: BC.beige),
-                  ),
+                Row(
+                  children: [
+                    CustomButton(
+                      onTap: () => _bloc.showEdit(context, state.system),
+                      icon: Text(
+                        'Редагувати',
+                        style: BS.bold18.apply(color: BC.beige),
+                      ),
+                    ),
+                    Space.w22,
+                    CustomButton(
+                      onTap: () => _bloc.showModal(context),
+                      icon: Text(
+                        'Пуш Повідомлення',
+                        style: BS.bold18.apply(color: BC.beige),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),

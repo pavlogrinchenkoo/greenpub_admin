@@ -1,5 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delivery/api/firestore_user/dto.dart';
 import 'package:delivery/style.dart';
 import 'package:delivery/utils/spaces.dart';
@@ -85,12 +86,14 @@ class _UserPageState extends State<UserPage> {
                                     ))
                                 : ClipRRect(
                                     borderRadius: BRadius.r16,
-                                    child: Image.memory(
-                                      state.image ?? Uint8List(0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: state.image ?? '',
+                                      progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                          const CustomIndicator(),
+                                      errorWidget: (context, url, error) => const Icon(Icons.error),
                                       width: 400,
                                       height: 400,
-                                      fit: BoxFit.cover,
-                                    ),
+                                      fit: BoxFit.cover,),
                                   ),
                             Space.h32,
                             Padding(

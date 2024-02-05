@@ -17,9 +17,9 @@ class SharesCubit extends Cubit<SharesState> {
   String uid = '';
   bool isAddShared = false;
   List<SharesModel> shares = [];
-  List<Uint8List?> images = [];
+  List<String?> images = [];
   SharesModel? shared;
-  Uint8List? image;
+  String? image;
   String? imagePath;
   int index = 0;
 
@@ -109,7 +109,8 @@ class SharesCubit extends Cubit<SharesState> {
       final Uint8List? pickedFile = await ImagePickerWeb.getImageAsBytes();
       sharedApi.deleteImage(uid ?? '');
       final imagePath = await sharedApi.saveImage(pickedFile, uid ?? '');
-      image = pickedFile;
+      final getImage = await sharedApi.getImage(imagePath);
+      image = getImage;
       this.imagePath = imagePath;
       emit(LoadedState(shares: shares));
     } catch (e) {

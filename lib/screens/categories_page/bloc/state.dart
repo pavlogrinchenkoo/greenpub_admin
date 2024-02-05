@@ -7,7 +7,7 @@ class LoadingState extends CategoryState {}
 
 class LoadedState extends CategoryState {
   final List<CategoryModel>? categories;
-  final List<Uint8List?>? images;
+  final List<String?>? images;
   final String? uuid;
 
   LoadedState( {this.categories, this.images, this.uuid});

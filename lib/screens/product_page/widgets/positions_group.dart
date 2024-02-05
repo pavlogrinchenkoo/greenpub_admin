@@ -32,34 +32,34 @@ class PositionsGroup extends StatelessWidget {
           ],
         ),
         Space.h16,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var item in position?.positions ?? [])
-              Container(
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: BC.beige,
-                  borderRadius: BRadius.r10,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${item.name}', style: BS.bold16, maxLines: 2, overflow: TextOverflow.ellipsis),
-                          Space.h8,
-                          Text('${item.price} грн', style: BS.sb14),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-          ],
-        ),
+        // Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     for (var item in position?.positions ?? [])
+        //       Container(
+        //         padding: const EdgeInsets.all(16),
+        //         margin: const EdgeInsets.only(bottom: 16),
+        //         decoration: BoxDecoration(
+        //           color: BC.beige,
+        //           borderRadius: BRadius.r10,
+        //         ),
+        //         child: Row(
+        //           children: [
+        //             Expanded(
+        //               child: Column(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 children: [
+        //                   Text('${item.name}', style: BS.bold16, maxLines: 2, overflow: TextOverflow.ellipsis),
+        //                   Space.h8,
+        //                   Text('${item.price} грн', style: BS.sb14),
+        //                 ],
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //       )
+        //   ],
+        // ),
       ],
     );
   }

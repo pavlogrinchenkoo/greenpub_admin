@@ -12,6 +12,8 @@ import 'package:delivery/api/positions/dto.dart';
 import 'package:delivery/api/positions/request.dart';
 import 'package:delivery/screens/product_page/widgets/show_dialog_position.dart';
 import 'package:delivery/screens/products_page/bloc/bloc.dart';
+import 'package:delivery/style.dart';
+import 'package:delivery/widgets/custom_show_dialog.dart';
 import 'package:delivery/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +32,7 @@ class ProductCubit extends Cubit<ProductState> {
       : super(LoadingState());
 
   ProductModel? product;
-  ImageModel? image;
+  String? image;
   bool isPromo = false;
   List<TagModel>? tags = [];
   List<CategoryModel> categoryList = [];
@@ -62,7 +64,6 @@ class ProductCubit extends Cubit<ProductState> {
       category = product?.category;
       tags = product?.tags;
       positions = product?.positions ?? [];
-
       emit(LoadedState(
           product: product,
           image: image,
@@ -138,6 +139,60 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 
+  void showDialogEdit(BuildContext context,
+      {String? name,
+        String? price,
+        String? newPrice,
+        CategoryModel? category,
+        String? description,
+        String? weight,
+        String? time,
+        bool? isPromo,
+        String? imagePath,
+        String? uuid,
+        List<TagModel>? tags,
+        bool? isShow,
+        List<PositionGroupModel>? positions,
+        String? filterOrders}) {
+    showDialog(context: context, builder: (buildContext) => CustomShowDialog(
+      title: 'Змінити продукт?',
+      text: Text('Ви впевнені що хочете змінити продукт?', style: BS.bold14),
+      onTapOne: () {
+         editProduct(context,
+        name: name,
+        price: price,
+        newPrice: newPrice,
+        category: category,
+        description: description,
+        weight: weight,
+        time: time,
+        isPromo: isPromo,
+        imagePath: imagePath,
+        uuid: uuid,
+        tags: tags,
+        isShow: isShow,
+        positions: positions,
+        filterOrders: filterOrders
+      );
+        context.router.pop();
+      },
+      onTapTwo: () => context.router.pop(),
+      buttonOne: 'Змінити',
+      buttonTwo: 'Скасувати',
+    ));
+  }
+
+  void showDialogDelete(BuildContext context) {
+    showDialog(context: context, builder: (buildContext) => CustomShowDialog(
+      title: 'Видалити продукт?',
+      text: Text('Ви впевнені що хочете видалити продукт?', style: BS.bold14),
+      onTapOne: () => deleteProduct(context),
+      onTapTwo: () => context.router.pop(),
+      buttonOne: 'Видалити',
+      buttonTwo: 'Скасувати',
+    ));
+  }
+
   Future<void> deleteProduct(BuildContext context) async {
     try {
       await firestoreApi.deleteProduct(product?.uuid ?? '');
@@ -173,10 +228,8 @@ class ProductCubit extends Cubit<ProductState> {
       firestoreApi.deleteImage(product?.uuid ?? '');
       final imagePath =
           await firestoreApi.saveImage(pickedFile, product?.uuid ?? '');
-      image = ImageModel(
-        bytes: pickedFile,
-        path: imagePath,
-      );
+      final getImage = await firestoreApi.getImage(imagePath);
+      image = getImage;
       this.imagePath = imagePath;
       cache.deletePhoto();
       emit(LoadedState(
@@ -260,7 +313,6 @@ class ProductCubit extends Cubit<ProductState> {
         tagsList: tagsList
     ));
   }
-
 
  void showDialogPosition(BuildContext context) {
     print(positionGroups.length);

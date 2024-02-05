@@ -11,7 +11,7 @@ PositionGroupModel _$PositionGroupModelFromJson(Map<String, dynamic> json) =>
       uuid: json['uuid'] as String?,
       name: json['name'] as String?,
       positions: (json['positions'] as List<dynamic>?)
-          ?.map((e) => ProductModelPosition.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => e as String)
           .toList(),
       required: json['required'] as bool?,
     );
@@ -24,9 +24,32 @@ Map<String, dynamic> _$PositionGroupModelToJson(PositionGroupModel instance) =>
       'required': instance.required,
     };
 
+PositionOrdersGroupModel _$PositionOrdersGroupModelFromJson(
+        Map<String, dynamic> json) =>
+    PositionOrdersGroupModel(
+      uuid: json['uuid'] as String?,
+      name: json['name'] as String?,
+      positions: (json['positions'] as List<dynamic>?)
+          ?.map((e) => ProductModelPosition.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      required: json['required'] as bool?,
+      count: json['count'] as int?,
+    );
+
+Map<String, dynamic> _$PositionOrdersGroupModelToJson(
+        PositionOrdersGroupModel instance) =>
+    <String, dynamic>{
+      'uuid': instance.uuid,
+      'name': instance.name,
+      'positions': instance.positions,
+      'count': instance.count,
+      'required': instance.required,
+    };
+
 ProductModelPosition _$ProductModelPositionFromJson(
         Map<String, dynamic> json) =>
     ProductModelPosition(
+      count: json['count'] as int?,
       uuid: json['uuid'] as String?,
       oldPrice: (json['oldPrice'] as num?)?.toDouble(),
       price: (json['price'] as num?)?.toDouble(),
@@ -48,6 +71,7 @@ ProductModelPosition _$ProductModelPositionFromJson(
 Map<String, dynamic> _$ProductModelPositionToJson(
         ProductModelPosition instance) =>
     <String, dynamic>{
+      'count': instance.count,
       'uuid': instance.uuid,
       'oldPrice': instance.oldPrice,
       'price': instance.price,

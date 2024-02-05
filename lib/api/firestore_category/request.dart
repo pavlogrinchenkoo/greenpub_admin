@@ -81,15 +81,11 @@ class FirestoreCategoryApi {
     }
   }
 
-  Future<Uint8List?> getImage(String name) async {
+  Future<String?> getImage(String name) async {
     final Reference storageRef = FirebaseStorage.instance.ref();
     final imageRef = storageRef.child(name);
     try {
-      final image = await imageRef.getData();
-      if (image != null) {
-        List<int> imageBytes = image.toList();
-        String base64Image = base64Encode(imageBytes);
-      }
+      final image = await imageRef.getDownloadURL();
       return image;
     } catch (e) {
       print("Помилка при отриманні даних з Firebase: $e");
@@ -100,7 +96,7 @@ class FirestoreCategoryApi {
   Future<String> saveImage(Uint8List? file, String uuid) async {
     try {
       final storageRef = FirebaseStorage.instance.ref();
-      final path = 'image/categories/$uuid';
+      final path = 'image/categories/$uuid.svg';
       final mountainsRef = storageRef.child(path);
       await mountainsRef.putData(file!);
       return path;

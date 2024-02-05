@@ -6,7 +6,9 @@ import 'package:delivery/widgets/custom_indicator.dart';
 import 'package:delivery/widgets/custom_scaffold.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'bloc/bloc.dart';
 
@@ -66,7 +68,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                     : ClipRRect(
                                         borderRadius: BRadius.r16,
                                         child: Image.memory(
-                                          _bloc.image!,
+                                          _bloc.image ?? Uint8List(0),
                                           width: 50,
                                           height: 50,
                                           fit: BoxFit.cover,
@@ -118,11 +120,15 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                       )
                                     : ClipRRect(
                                         borderRadius: BRadius.r16,
-                                        child: Image.memory(
-                                          state.images![index]!,
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.cover,
+                                        child: Center(
+                                          child: SizedBox(
+                                            width: 50,
+                                            height: 50,
+                                            child: SvgPicture.network(
+                                              state.images?[index] ?? '',
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
                                         ),
                                       ),
                               ),

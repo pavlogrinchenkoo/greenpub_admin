@@ -7,6 +7,7 @@ import 'package:delivery/utils/spaces.dart';
 import 'package:delivery/widgets/custom_buttom.dart';
 import 'package:delivery/widgets/custom_indicator.dart';
 import 'package:delivery/widgets/custom_scaffold.dart';
+import 'package:delivery/widgets/custom_text_field.dart';
 import 'package:delivery/widgets/selected_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +22,7 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
+  final TextEditingController controller = TextEditingController();
   late ProductsCubit _bloc;
 
   @override
@@ -39,60 +41,97 @@ class _ProductsPageState extends State<ProductsPage> {
       }
       if (state is LoadedState) {
         return CustomScaffold(
-          body: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: state.categories?.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final category = state.categories?[index].category;
-              final isSelected = state.categories?[index].isShow;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(category ?? '', style: BS.bold20),
-                      Space.w20,
-                      SelectedButton(
-                        onTap: () => _bloc.showSelectedDialog(
-                            context,
-                            state.categories?[index],
-                            state.products
-                                ?.where((element) =>
-                                    element.category?.category == category)
-                                .toList()),
-                        isSelected: isSelected ?? false,
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: CustomTextField(
+                    controller: controller,
+                    enabled: true,
+                    text: 'Пошук',
+                    onChanged: (value) {
+                      _bloc.search(value);
+                    }),
+              ),
+              !(_bloc.isSearch)
+                  ? Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: state.categories?.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final category = state.categories?[index].category;
+                          final isSelected = state.categories?[index].isShow;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(category ?? '', style: BS.bold20),
+                                  Space.w20,
+                                  SelectedButton(
+                                    onTap: () => _bloc.showSelectedDialog(
+                                        context,
+                                        state.categories?[index],
+                                        state.products
+                                            ?.where((element) =>
+                                                element.category?.category ==
+                                                category)
+                                            .toList()),
+                                    isSelected: isSelected ?? false,
+                                  ),
+                                ],
+                              ),
+                              Space.h16,
+                              GridView.builder(
+                                shrinkWrap: true,
+                                itemCount: state.products
+                                    ?.where((element) =>
+                                        element.category?.category == category)
+                                    .length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  mainAxisExtent: 175,
+                                  crossAxisCount: 4,
+                                  mainAxisSpacing: 16,
+                                  crossAxisSpacing: 16,
+                                ),
+                                itemBuilder: (context, index) {
+                                  final product = state.products
+                                      ?.where((element) =>
+                                          element.category?.category ==
+                                          category)
+                                      .toList()[index];
+                                  return _CustomContainer(
+                                    product: product,
+                                  );
+                                },
+                              ),
+                              Space.h16,
+                            ],
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                  Space.h16,
-                  GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.products
-                        ?.where(
-                            (element) => element.category?.category == category)
-                        .length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      mainAxisExtent: 175,
-                      crossAxisCount: 4,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                    ),
-                    itemBuilder: (context, index) {
-                      final product = state.products
-                          ?.where((element) =>
-                              element.category?.category == category)
-                          .toList()[index];
-                      return _CustomContainer(
-                        product: product,
-                      );
-                    },
-                  ),
-                  Space.h16,
-                ],
-              );
-            },
+                    )
+                  : Expanded(
+                      child: GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: state.products?.length,
+                          shrinkWrap: true,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: 175,
+                            crossAxisCount: 4,
+                            mainAxisSpacing: 16,
+                            crossAxisSpacing: 16,
+                          ),
+                          itemBuilder: (context, index) {
+                            final product = state.products?[index];
+                            return _CustomContainer(
+                              product: product,
+                            );
+                          })),
+            ],
           ),
           floatingActionButton: InkWell(
             onTap: () => _bloc.goAddProductPage(context),

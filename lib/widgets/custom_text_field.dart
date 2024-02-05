@@ -10,9 +10,10 @@ class CustomTextField extends StatelessWidget {
   final String? text;
   final bool enabled;
   final String? Function(String?)? validator;
+  final void Function(String?)? onChanged;
 
   const CustomTextField(
-      {super.key, required this.controller, this.text, required this.enabled, this.validator});
+      {super.key, required this.controller, this.text, required this.enabled, this.validator, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           child:   FormBuilderTextField(
+            onChanged: onChanged,
             controller: controller,
             name: 'text_field',
             decoration: InputDecoration(

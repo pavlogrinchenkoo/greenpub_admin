@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
@@ -20,7 +21,7 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   bool isShowTextField = false;
   List<CategoryModel> categories = [];
-  // List<Uint8List?> images = [];
+  List<String?> images = [];
   String? imagePath;
   Uint8List? image;
   String? uid;
@@ -38,15 +39,14 @@ class CategoryCubit extends Cubit<CategoryState> {
     try {
       final categoriesList = await categoriesApi.getCategoriesList();
       categories = categoriesList;
-      // images.clear();
-      // for (final category in categories) {
-      //   final image = category.image;
-      //   final getImage = await categoriesApi.getImage(image ?? '');
-      //
-      //   images.add(getImage);
-      // }
+      images.clear();
+      for (final category in categories) {
+        final image = category.image;
+        final getImage = await categoriesApi.getImage(image ?? '');
+        images.add(getImage);
+      }
       emit(LoadedState(categories: categoriesList,
-          // images: images
+          images: images
       ));
     } catch (e) {
       emit(ErrorState());
@@ -60,7 +60,7 @@ class CategoryCubit extends Cubit<CategoryState> {
     isShowTextField = true;
     uid = uuid.v1();
     emit(LoadedState(categories: categories,
-        // images: images,
+        images: images,
         uuid: uid));
   }
 

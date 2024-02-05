@@ -28,8 +28,9 @@ class PositionCubit extends Cubit<PositionState> {
     try {
       emit(LoadingState());
       if (position != null) {
+        final getPosition = await firestoreApi.getProductsOption(position.positions ?? []);
         positionGroupModel = position;
-        positions = position.positions;
+        positions = getPosition;
         required = position.required ?? false;
         controller.text = position.name ?? '';
       }
@@ -103,19 +104,20 @@ class PositionCubit extends Cubit<PositionState> {
 
 
   void savePosition(String? name, BuildContext context) async {
+    final positionString = positions?.map((e) => e.uuid ?? '').toList();
     if(positionGroupModel != null){
+
       final positionGroupModel = PositionGroupModel(
           uuid: this.positionGroupModel?.uuid,
-          name: name, positions: positions, required: false);
+          name: name, positions: positionString, required: false);
       await positionApi.editPosition(positionGroupModel);
     } else {
    final positionGroupModel = PositionGroupModel(
           uuid: uuid.v1(),
-          name: name, positions: positions, required: false);
+          name: name, positions: positionString, required: false);
       await positionApi.addPosition(positionGroupModel);
 
     }
-
 
     if (context.mounted) {
       context.router

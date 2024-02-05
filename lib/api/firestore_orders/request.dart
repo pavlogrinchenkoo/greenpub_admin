@@ -10,27 +10,24 @@ class FirestoreOrdersApi {
   QuerySnapshot? snapshot = null;
 
   Future<List<OrderModel>> getOrdersList(int limit) async {
-    final time = DateTime.now();
     try {
       if (snapshot?.docs.isNotEmpty == true) {
         var lastVisible =
         snapshot!.docs[snapshot!.docs.length - 1];
-      QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time').startAfterDocument(lastVisible).limit(limit).get();
+      QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time',  descending: true).startAfterDocument(lastVisible).limit(limit).get();
       List<OrderModel> orderList = [];
-
       for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {
         if (ordersDoc.exists) {
           final userData =
           OrderModel.fromJson(ordersDoc.data() as Map<String, dynamic>);
           orderList.add(userData);
         }
+        snapshot = ordersSnapshot;
       }
-      print('Users list: $orderList');
       return orderList;
     } else {
         QuerySnapshot ordersSnapshot = await orderCollection.orderBy('time', descending: true).limit(limit).get();
         List<OrderModel> orderList = [];
-        print('ordersSnapshot: $ordersSnapshot');
         for (QueryDocumentSnapshot ordersDoc in ordersSnapshot.docs) {
           if (ordersDoc.exists) {
             final userData =
@@ -38,8 +35,8 @@ class FirestoreOrdersApi {
             print(userData);
             orderList.add(userData);
           }
+          snapshot = ordersSnapshot;
         }
-        print('Users list: $orderList');
         return orderList;
     }
     } catch (e) {

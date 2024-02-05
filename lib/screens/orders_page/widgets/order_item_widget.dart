@@ -14,10 +14,10 @@ class OrderItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String price = '';
-    if (order.price != null && order.discount != null) {
-      price = (order.price!.toInt() - order.discount!.toInt()).toString();
-    }
+    // String price = '';
+    // if (order.price != null && order.discount != null) {
+    //   price = (order.price!.toInt() - order.discount!.toInt()).toString();
+    // }
 
     final DateTime? dateTimeString = order.timeCreate == null
         ? null
@@ -55,7 +55,8 @@ class OrderItemWidget extends StatelessWidget {
                       deliveryStatus: order.statusType!,
                     ),
                   const Spacer(),
-                  if (order.price != null) OrderPriceWidget(price: price),
+                  if (order.price != null)
+                    OrderPriceWidget(price: order.totalPrice),
                 ],
               )
             ],

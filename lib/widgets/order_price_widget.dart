@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class OrderPriceWidget extends StatelessWidget {
   const OrderPriceWidget({super.key, required this.price});
 
-  final String price;
+  final dynamic price;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class OrderPriceWidget extends StatelessWidget {
       text: TextSpan(
         children: <TextSpan>[
           TextSpan(
-            text: price,
+            text: price.toStringAsFixed(2),
             style: BS.bold22,
           ),
           TextSpan(

@@ -24,6 +24,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   List<ProductModel> products = [];
   List<CategoryModel> categories = [];
+  bool isSearch = false;
 
   Future<void> init(BuildContext context) async {
     dispose();
@@ -31,6 +32,25 @@ class ProductsCubit extends Cubit<ProductsState> {
       emit(LoadingState());
       await getCategories();
       await getProducts();
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
+  Future<void> search(String? value) async {
+    try {
+      isSearch = true;
+      print('value: $value');
+     List<ProductModel> products = [...this.products];
+     final filteredProducts = this
+          .products
+          .where((product) =>
+          product.name!.toLowerCase().contains(value!.toLowerCase()))
+          .toList();
+     if(value?.isEmpty ?? true) {
+       isSearch = false;
+     }
+      emit(LoadedState(products: filteredProducts, categories: categories));
     } catch (e) {
       emit(ErrorState());
     }
@@ -48,6 +68,8 @@ class ProductsCubit extends Cubit<ProductsState> {
   Future<void> getProducts() async {
     try {
       final products = await firestoreApi.getProducts();
+     // final filter = products.where((element) => element.category?.category == 'М\'ясні страви').toList();
+     // print('filter: $filter');
       this.products.addAll(products);
       emit(LoadedState(products: this.products, categories: categories));
     } catch (e) {

@@ -10,7 +10,7 @@ class LoadingState extends ProductState {}
 
 class LoadedState extends ProductState {
   final ProductModel? product;
-  final ImageModel? image;
+  final String? image;
   final String? imagePath;
   final List<CategoryModel>? categoryList;
   final List<TagModel>? tagsList;

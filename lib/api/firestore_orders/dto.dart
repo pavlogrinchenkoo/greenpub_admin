@@ -83,23 +83,21 @@ class Address {
 
 class ImageModel {
   final String? path;
-  final Uint8List? bytes;
+  final String? bytes;
 
   ImageModel({this.path, this.bytes});
 
   factory ImageModel.fromJson(Map<String, dynamic> json) {
     return ImageModel(
       path: json['path'] as String?,
-      bytes: json['bytes'] != null
-          ? Uint8List.fromList(List<int>.from(json['bytes']))
-          : null,
+      bytes: json['bytes'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'path': path,
-      'bytes': bytes?.toList(),
+      'bytes': bytes,
     };
   }
 }

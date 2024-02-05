@@ -7,7 +7,7 @@ class LoadingState extends UserState {}
 
 class LoadedState extends UserState {
   final UserModel? user;
-  final Uint8List? image;
+  final String? image;
 
   LoadedState({this.user, this.image});
 }

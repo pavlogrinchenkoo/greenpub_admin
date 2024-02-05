@@ -18,7 +18,8 @@ class DetailOrder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _bloc = context.read<OrdersCubit>();
+    final bloc = context.read<OrdersCubit>();
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -33,13 +34,13 @@ class DetailOrder extends StatelessWidget {
             children: [
               Text('Деталі замовлення', style: BS.bold18),
               const Spacer(),
-              (!_bloc.isEdit)
+              (!bloc.isEdit)
                   ? IconButton(
-                      onPressed: () => _bloc.startEdit(),
+                      onPressed: () => bloc.startEdit(),
                       icon: const Icon(Icons.edit),
                     )
                   : IconButton(
-                      onPressed: () => _bloc.saveOrder(order, context),
+                      onPressed: () => bloc.saveOrder(order, context),
                       icon: const Icon(Icons.save_alt_sharp),
                     ),
             ],
@@ -52,6 +53,10 @@ class DetailOrder extends StatelessWidget {
           Space.h8,
           Text(
             'Дата: ${order.timeCreate}',
+          ),
+          Space.h8,
+          Text(
+            'Час доставки: ${order.deliveryTime}',
           ),
           Space.h8,
           Text(
@@ -125,24 +130,29 @@ class DetailOrder extends StatelessWidget {
           Space.h8,
           CustomChoiceChip(children: [
             CustomItem(
-              isSelected: _bloc.payType == 'Готівкою',
+              isSelected: bloc.payType == 'cache',
               text: 'Готівкою',
-              onTap: () => _bloc.selectPayType('Готівкою'),
+              onTap: () => bloc.selectPayType('cache'),
             ),
             CustomItem(
-              isSelected: _bloc.payType == 'Карткою при отримані',
+              isSelected: bloc.payType == 'payWithCard',
               text: 'Картою',
-              onTap: () => _bloc.selectPayType('Карткою при отримані'),
+              onTap: () => bloc.selectPayType('payWithCard'),
             ),
             CustomItem(
-              isSelected: _bloc.payType == 'Apple Pay',
+              isSelected: bloc.payType == 'applePay',
               text: 'Apple Pay',
-              onTap: () => _bloc.selectPayType('Apple Pay'),
+              onTap: () => bloc.selectPayType('applePay'),
             ),
             CustomItem(
-              isSelected: _bloc.payType == 'Google Pay',
+              isSelected: bloc.payType == 'googlePay',
               text: 'Google Pay',
-              onTap: () => _bloc.selectPayType('Google Pay'),
+              onTap: () => bloc.selectPayType('googlePay'),
+            ),
+            CustomItem(
+              isSelected: bloc.payType == 'transactionToCard',
+              text: 'Траезакція на карту',
+              onTap: () => bloc.selectPayType('transactionToCard'),
             ),
           ]),
           Space.h8,
@@ -153,38 +163,16 @@ class DetailOrder extends StatelessWidget {
           Space.h8,
           CustomChoiceChip(children: [
             CustomItem(
-              isSelected: _bloc.deliveryType == 'Курєром',
+              isSelected: bloc.deliveryType == 'delivery',
               text: 'Курєром',
-              onTap: () => _bloc.selectDeliveryType('Курєром'),
+              onTap: () => bloc.selectDeliveryType('delivery'),
             ),
             CustomItem(
-              isSelected: _bloc.deliveryType == 'Самовивіз',
+              isSelected: bloc.deliveryType == 'pickup',
               text: 'Самовивіз',
-              onTap: () => _bloc.selectDeliveryType('Самовивіз'),
+              onTap: () => bloc.selectDeliveryType('pickup'),
             ),
           ]),
-          // FormBuilderChoiceChip(
-          //   onChanged: (value) => _bloc.selectDeliveryType(value ?? ''),
-          //   initialValue: order.deliveryType,
-          //   name: 'choice_chip',
-          //   spacing: 16,
-          //   runSpacing: 16,
-          //   selectedColor: BC.white,
-          //   backgroundColor: BC.grey,
-          //   decoration: const InputDecoration(
-          //     border: InputBorder.none,
-          //   ),
-          //   options: const [
-          //     FormBuilderChipOption(
-          //       value: 'Курєром',
-          //       child: Text('Курєром'),
-          //     ),
-          //     FormBuilderChipOption(
-          //       value: 'Самовивіз',
-          //       child: Text('Самовивіз'),
-          //     ),
-          //   ],
-          // ),
           Space.h8,
           Text(
             'Статус доставки',
@@ -193,61 +181,30 @@ class DetailOrder extends StatelessWidget {
           Space.h8,
           CustomChoiceChip(children: [
             CustomItem(
-              isSelected: _bloc.deliveryStatus == 'moderation',
+              isSelected: bloc.deliveryStatus == 'moderation',
               text: 'Обробляється',
               onTap: () =>
-                  _bloc.selectDeliveryStatus('moderation', order.uid, context),
+                  bloc.selectDeliveryStatus('moderation', order.uid, context),
             ),
             CustomItem(
-              isSelected: _bloc.deliveryStatus == 'delivering',
+              isSelected: bloc.deliveryStatus == 'delivering',
               text: 'Доставляється',
               onTap: () =>
-                  _bloc.selectDeliveryStatus('delivering', order.uid, context),
+                  bloc.selectDeliveryStatus('delivering', order.uid, context),
             ),
             CustomItem(
-              isSelected: _bloc.deliveryStatus == 'delivered',
+              isSelected: bloc.deliveryStatus == 'delivered',
               text: 'Доставлено',
               onTap: () =>
-                  _bloc.selectDeliveryStatus('delivered', order.uid, context),
+                  bloc.selectDeliveryStatus('delivered', order.uid, context),
             ),
             CustomItem(
-              isSelected: _bloc.deliveryStatus == 'cancelled',
+              isSelected: bloc.deliveryStatus == 'cancelled',
               text: 'Скасовано',
               onTap: () =>
-                  _bloc.selectDeliveryStatus('cancelled', order.uid, context),
+                  bloc.selectDeliveryStatus('cancelled', order.uid, context),
             ),
           ]),
-          // FormBuilderChoiceChip(
-          //   onChanged: (value) =>
-          //       _bloc.selectDeliveryStatus(value ?? '', order.uid, context),
-          //   initialValue: order.statusType,
-          //   name: 'choice_chip',
-          //   spacing: 16,
-          //   runSpacing: 16,
-          //   selectedColor: BC.white,
-          //   backgroundColor: BC.grey,
-          //   decoration: const InputDecoration(
-          //     border: InputBorder.none,
-          //   ),
-          //   options: const [
-          //     FormBuilderChipOption(
-          //       value: 'moderation',
-          //       child: Text('Обробляється'),
-          //     ),
-          //     FormBuilderChipOption(
-          //       value: 'delivering',
-          //       child: Text('Доставляється'),
-          //     ),
-          //     FormBuilderChipOption(
-          //       value: 'delivered',
-          //       child: Text('Доставлено'),
-          //     ),
-          //     FormBuilderChipOption(
-          //       value: 'cancelled',
-          //       child: Text('Скасовано'),
-          //     ),
-          //   ],
-          // ),
           Space.h8,
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,20 +260,20 @@ class DetailOrder extends StatelessWidget {
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
               childAspectRatio: 0.8,
-              mainAxisExtent: 290,
+              mainAxisExtent: 360,
             ),
             itemBuilder: (item, index) {
               final item = order.items?[index];
-              print(_bloc.images.length);
+              print(bloc.images.length);
               return ProductItem(
                 product: item,
-                image: _bloc.images[index]?.bytes,
+                image: bloc.images[index]?.bytes,
               );
             },
           ),
           Space.h8,
           CustomButton(
-            onTap: () => _bloc.showAddProductModal(context),
+            onTap: () => bloc.showAddProductModal(context),
             icon: Text(
               'Додати продукт',
               style: BS.bold14.apply(color: BC.white),

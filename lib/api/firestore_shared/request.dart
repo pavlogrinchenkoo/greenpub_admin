@@ -60,11 +60,11 @@ class SharedApi {
   }
 
 
-  Future<Uint8List?> getImage(String name) async {
+  Future<String?> getImage(String name) async {
     final Reference storageRef = FirebaseStorage.instance.ref();
     final imageRef = storageRef.child(name);
     try {
-      final image = await imageRef.getData();
+      final image = await imageRef.getDownloadURL();
       return image;
     } catch (e) {
       print("Помилка при отриманні даних з Firebase: $e");

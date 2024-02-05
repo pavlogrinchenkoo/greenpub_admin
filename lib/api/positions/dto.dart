@@ -8,10 +8,10 @@ part 'dto.g.dart';
 class PositionGroupModel {
   final String? uuid;
   final String? name;
-  final List<ProductModelPosition>? positions;
+  final List<String>? positions;
   bool? required;
 
-  PositionGroupModel({ this.uuid, this.name, this.positions, this.required});
+  PositionGroupModel({this.uuid, this.name, this.positions, this.required});
 
   factory PositionGroupModel.fromJson(Map<String, dynamic> json) =>
       _$PositionGroupModelFromJson(json);
@@ -20,7 +20,25 @@ class PositionGroupModel {
 }
 
 @JsonSerializable()
+class PositionOrdersGroupModel {
+  final String? uuid;
+  final String? name;
+  final List<ProductModelPosition>? positions;
+  final int? count;
+  bool? required;
+
+  PositionOrdersGroupModel(
+      {this.uuid, this.name, this.positions, this.required, this.count});
+
+  factory PositionOrdersGroupModel.fromJson(Map<String, dynamic> json) =>
+      _$PositionOrdersGroupModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PositionOrdersGroupModelToJson(this);
+}
+
+@JsonSerializable()
 class ProductModelPosition {
+  final int? count;
   final String? uuid; //disabled
   final double? oldPrice;
   final double? price;
@@ -34,19 +52,21 @@ class ProductModelPosition {
   final String? timeCreate;
   bool? required;
 
-  ProductModelPosition(
-      {this.uuid,
-        this.oldPrice,
-        this.price,
-        this.isPromo = false,
-        this.category,
-        this.tags,
-        this.image,
-        this.name,
-        this.description,
-        this.weight,
-        this.timeCreate,
-        this.required = false});
+  ProductModelPosition({
+    this.count,
+    this.uuid,
+    this.oldPrice,
+    this.price,
+    this.isPromo = false,
+    this.category,
+    this.tags,
+    this.image,
+    this.name,
+    this.description,
+    this.weight,
+    this.timeCreate,
+    this.required = false,
+  });
 
   factory ProductModelPosition.fromJson(Map<String, dynamic> json) =>
       _$ProductModelPositionFromJson(json);
