@@ -70,6 +70,9 @@ class ProductsCubit extends Cubit<ProductsState> {
       final products = await firestoreApi.getProducts();
      // final filter = products.where((element) => element.category?.category == 'М\'ясні страви').toList();
      // print('filter: $filter');
+      final idCategory = 'dcd8f180-c6ea-1e4b-80ad-8d7afac92046';
+     final filter = products.where((element) => element.category?.uuid == idCategory).toList();
+      print('filter: $filter');
       this.products.addAll(products);
       emit(LoadedState(products: this.products, categories: categories));
     } catch (e) {

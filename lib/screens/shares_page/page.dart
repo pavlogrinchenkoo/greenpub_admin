@@ -184,7 +184,7 @@ class _DetailContainer extends StatelessWidget {
         borderRadius: BRadius.r10,
         color: BC.white,
       ),
-      child: Column(
+      child: ListView(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,

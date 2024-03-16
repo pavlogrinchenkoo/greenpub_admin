@@ -365,10 +365,13 @@ class OrdersCubit extends Cubit<OrdersState> {
       double orderTotalPrice = 0;
       double price = 0;
       double discount = 0;
+      double totalDiscount = 0;
       final spentPoints = order.spentPoints;
-      for (final product in order.items ?? []) {
-        final totalPrice = (product.count ?? 0) * (product.product?.price ?? 0);
+      for (final ItemProduct product in order.items ?? []) {
+        final totalPrice = (product.count ?? 0) * (product.product?.priceWithOptions ?? 0);
+        final totalPriceDiscount = (product.count ?? 0) * (product.product?.price ?? 0);
         orderTotalPrice = orderTotalPrice + totalPrice;
+        totalDiscount = totalDiscount + totalPriceDiscount;
         if (product.product?.oldPrice != null &&
             product.product?.oldPrice != 0) {
           final oldPrice =
@@ -376,10 +379,11 @@ class OrdersCubit extends Cubit<OrdersState> {
           price = price + oldPrice;
         } else {
           price = price + totalPrice;
+          print('price $price');
         }
       }
       orderTotalPrice = orderTotalPrice - (spentPoints ?? 0);
-      discount = price - orderTotalPrice;
+      discount = price - totalDiscount;
       if (deliveryType == 'Самовивіз') {
         orderTotalPrice = orderTotalPrice * 0.9;
         discount = price - orderTotalPrice;

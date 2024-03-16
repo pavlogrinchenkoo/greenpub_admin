@@ -22,6 +22,7 @@ class ProductModel {
   final int? filterOrders;
   final List<PositionGroupModel>? positions;
   final List<PositionOrdersGroupModel>? options;
+  double? priceWithOptions;
 
   ProductModel(
       {this.uuid,
@@ -38,7 +39,8 @@ class ProductModel {
       this.isShow = true,
       this.filterOrders = 0,
       this.positions,
-      this.options});
+      this.options,
+      this.priceWithOptions});
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);

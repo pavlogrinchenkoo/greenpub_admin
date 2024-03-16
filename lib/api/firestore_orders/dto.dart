@@ -37,7 +37,8 @@ class OrderModel {
       this.comment,
       this.spentPoints,
       this.deliveryPrice,
-      this.deliveryTime});
+      this.deliveryTime,
+      });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>
       _$OrderModelFromJson(json);

@@ -31,6 +31,7 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
           ?.map((e) =>
               PositionOrdersGroupModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      priceWithOptions: (json['priceWithOptions'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
@@ -50,4 +51,5 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
       'filterOrders': instance.filterOrders,
       'positions': instance.positions,
       'options': instance.options,
+      'priceWithOptions': instance.priceWithOptions,
     };

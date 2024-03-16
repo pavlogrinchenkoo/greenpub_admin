@@ -80,7 +80,7 @@ class ProductItem extends StatelessWidget {
                         itemCount: item?.options?.length ?? 0,
                         itemBuilder: (context, index) {
                       final option = item?.options?[index];
-                    return Text('${option?.name ?? ''}X${option?.count ?? 0}',style: BS.sb14.apply(color: BC.black),);
+                    return Text('${option?.name ?? ''}X${option?.positions?[0].count ?? 0}',style: BS.sb14.apply(color: BC.black),);
                         }),
                   ),
                     Space.h8,

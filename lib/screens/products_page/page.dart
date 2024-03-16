@@ -60,6 +60,7 @@ class _ProductsPageState extends State<ProductsPage> {
                         itemCount: state.categories?.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
+                          final idCategory = state.categories?[index].uuid;
                           final category = state.categories?[index].category;
                           final isSelected = state.categories?[index].isShow;
                           return Column(
@@ -87,7 +88,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                 shrinkWrap: true,
                                 itemCount: state.products
                                     ?.where((element) =>
-                                        element.category?.category == category)
+                                        element.category?.uuid == idCategory)
                                     .length,
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
@@ -99,8 +100,8 @@ class _ProductsPageState extends State<ProductsPage> {
                                 itemBuilder: (context, index) {
                                   final product = state.products
                                       ?.where((element) =>
-                                          element.category?.category ==
-                                          category)
+                                          element.category?.uuid ==
+                                          idCategory)
                                       .toList()[index];
                                   return _CustomContainer(
                                     product: product,
