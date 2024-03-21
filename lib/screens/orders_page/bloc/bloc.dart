@@ -120,8 +120,10 @@ class OrdersCubit extends Cubit<OrdersState> {
               element.product?.oldPrice == 0)
           .toList();
       final price = items?.fold(0.0, (previousValue, element) {
-        return previousValue + (element.product?.price ?? 0);
+        print(element.product?.priceWithOptions);
+        return previousValue + ((element.product?.price ?? 0)) *  (element.count ?? 0);
       });
+
       print(deliveryType);
       if (deliveryType == 'delivery') {
         final points = (price ?? 0) * 0.05;
