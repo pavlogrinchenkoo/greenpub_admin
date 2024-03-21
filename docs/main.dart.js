@@ -10936,8 +10936,8 @@ m=A.o1(a.i(0,"discount"))
 if(m==null)m=k
 l=A.o1(a.i(0,"totalPrice"))
 if(l==null)l=k
-return new A.jV(i,h,g,r,q,p,o,n,s,m,l,A.aC(a.i(0,"comment")),A.eo(a.i(0,"spentPoints")),A.eo(a.i(0,"deliveryPrice")),A.aC(a.i(0,"deliveryTime")))},
-bnN(a){return A.ai(["uid",a.a,"userId",a.b,"items",a.c,"address",a.d,"payType",a.e,"deliveryType",a.f,"statusType",a.r,"timeCreate",a.w,"price",a.x,"discount",a.y,"totalPrice",a.z,"comment",a.Q,"spentPoints",a.as,"deliveryPrice",a.at,"deliveryTime",a.ax],t.N,t.z)},
+return new A.jV(i,h,g,r,q,p,o,n,s,m,l,A.aC(a.i(0,"comment")),A.eo(a.i(0,"countedPoints")),A.eo(a.i(0,"deliveryPrice")),A.aC(a.i(0,"deliveryTime")))},
+bnN(a){return A.ai(["uid",a.a,"userId",a.b,"items",a.c,"address",a.d,"payType",a.e,"deliveryType",a.f,"statusType",a.r,"timeCreate",a.w,"price",a.x,"discount",a.y,"totalPrice",a.z,"comment",a.Q,"countedPoints",a.as,"deliveryPrice",a.at,"deliveryTime",a.ax],t.N,t.z)},
 jV:function jV(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o){var _=this
 _.a=a
 _.b=b
@@ -60406,7 +60406,7 @@ return A.t($async$oI,r)},
 ghF(){return B.cs}}
 A.jV.prototype={
 fQ(){var s=this
-return A.ai(["uid",s.a,"userId",s.b,"items",s.c,"address",s.d,"payType",s.e,"deliveryType",s.f,"statusType",s.r,"timeCreate",s.w,"price",s.x,"discount",s.y,"totalPrice",s.z,"comment",s.Q,"spentPoints",s.as,"deliveryPrice",s.at,"deliveryTime",s.ax],t.N,t.z)}}
+return A.ai(["uid",s.a,"userId",s.b,"items",s.c,"address",s.d,"payType",s.e,"deliveryType",s.f,"statusType",s.r,"timeCreate",s.w,"price",s.x,"discount",s.y,"totalPrice",s.z,"comment",s.Q,"countedPoints",s.as,"deliveryPrice",s.at,"deliveryTime",s.ax],t.N,t.z)}}
 A.ku.prototype={
 fQ(){return A.ai(["product",this.a,"count",this.b],t.N,t.z)}}
 A.aj9.prototype={
@@ -62921,35 +62921,34 @@ return A.n(p.A1(n,j==null?0:j),$async$uJ)
 case 9:case 3:return A.r(null,r)}})
 return A.t($async$uJ,r)},
 x6(a,b){return this.aad(a,b)},
-aad(a,b){var s=0,r=A.u(t.H),q=1,p,o=this,n,m,l,k,j,i,h,g,f,e,d
-var $async$x6=A.p(function(c,a0){if(c===1){p=a0
+aad(a,b){var s=0,r=A.u(t.H),q=1,p,o=this,n,m,l,k,j,i,h,g,f,e
+var $async$x6=A.p(function(c,d){if(c===1){p=d
 s=q}while(true)switch(s){case 0:q=3
 s=6
 return A.n(o.PL(),$async$x6)
 case 6:n=a.a
-j=a.at
-A.az(j)
-i=a.z
-if(i==null)i=0
-m=i+(j==null?0:j)
+k=a.at
+A.az(k)
+j=a.z
+if(j==null)j=0
+m=j+(k==null?0:k)
 A.az(m)
-h=a.f
-l=h==null?"":h
+j=o.cy
 i=o.CW
-g=o.cx
-f=a.y
-k=new A.jV(n,a.b,a.c,a.d,i,l,g,a.w,a.x,f,m,a.Q,a.as,j,null)
-j=n
-if(j==null)j=""
+h=o.cx
+g=a.y
+l=new A.jV(n,a.b,a.c,a.d,i,j,h,a.w,a.x,g,m,a.Q,a.as,k,null)
+k=n
+if(k==null)k=""
 s=7
-return A.n(o.y.A0(j,k),$async$x6)
+return A.n(o.y.A0(k,l),$async$x6)
 case 7:o.at=!1
 if(b.e!=null)o.rS(b,o.ay)
 q=1
 s=5
 break
 case 3:q=2
-d=p
+e=p
 o.aD(new A.z6())
 s=5
 break
@@ -63165,8 +63164,8 @@ a1=$.S5
 if(a1==null)A.S4(a0)
 else a1.$1(a0)}}l-=o==null?0:o
 a2=k-j
-if(q.cy==="\u0421\u0430\u043c\u043e\u0432\u0438\u0432\u0456\u0437"){l*=0.9
-a2=k-l}p.x=A.i3(B.d.al(k,2))
+if(q.cy==="\u0421\u0430\u043c\u043e\u0432\u0438\u0432\u0456\u0437")a2=k-l
+p.x=A.i3(B.d.al(k,2))
 p.z=A.i3(B.d.al(l,2))
 p.y=A.i3(B.d.al(a2,2))
 n=q.Q

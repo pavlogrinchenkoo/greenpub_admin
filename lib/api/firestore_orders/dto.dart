@@ -18,7 +18,7 @@ class OrderModel {
   double? discount;
   double? totalPrice;
   final String? comment;
-  final int? spentPoints;
+  final int? countedPoints;
   final int? deliveryPrice;
   final String? deliveryTime;
 
@@ -35,7 +35,7 @@ class OrderModel {
       this.discount,
       this.totalPrice,
       this.comment,
-      this.spentPoints,
+      this.countedPoints,
       this.deliveryPrice,
       this.deliveryTime,
       });

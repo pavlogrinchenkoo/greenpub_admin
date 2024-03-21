@@ -230,7 +230,7 @@ class DetailOrder extends StatelessWidget {
                   ),
                   Space.h8,
                   Text(
-                    'Бали: ${order.spentPoints ?? 0}₴',
+                    'Бали: ${order.countedPoints ?? 0}₴',
                   ),
                 ],
               ),

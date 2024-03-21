@@ -23,7 +23,7 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) => OrderModel(
       discount: (json['discount'] as num?)?.toDouble(),
       totalPrice: (json['totalPrice'] as num?)?.toDouble(),
       comment: json['comment'] as String?,
-      spentPoints: json['spentPoints'] as int?,
+      countedPoints: json['countedPoints'] as int?,
       deliveryPrice: json['deliveryPrice'] as int?,
       deliveryTime: json['deliveryTime'] as String?,
     );
@@ -42,7 +42,7 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
       'discount': instance.discount,
       'totalPrice': instance.totalPrice,
       'comment': instance.comment,
-      'spentPoints': instance.spentPoints,
+      'countedPoints': instance.countedPoints,
       'deliveryPrice': instance.deliveryPrice,
       'deliveryTime': instance.deliveryTime,
     };

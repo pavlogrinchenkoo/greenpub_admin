@@ -135,7 +135,7 @@ class OrdersCubit extends Cubit<OrdersState> {
         await firestoreApi.editPoints(user?.uid ?? '', priceInPoints);
       }
       await firestoreApi.editPointsRemove(
-          user?.uid ?? '', order.spentPoints ?? 0);
+          user?.uid ?? '', order.countedPoints?? 0);
     }
   }
 
@@ -146,7 +146,7 @@ class OrdersCubit extends Cubit<OrdersState> {
       print(order.deliveryPrice);
       final totalPrice = (order.totalPrice ?? 0) + (order.deliveryPrice ?? 0);
       print(totalPrice);
-      final deliveryType = order.deliveryType ?? '';
+      // final deliveryType = order.deliveryType ?? '';
       final newOrder = OrderModel(
         uid: uid,
         userId: order.userId,
@@ -160,9 +160,10 @@ class OrdersCubit extends Cubit<OrdersState> {
         totalPrice: totalPrice,
         discount: order.discount,
         price: order.price,
-        spentPoints: order.spentPoints,
+        countedPoints: order.countedPoints,
         deliveryPrice: order.deliveryPrice,
       );
+
       await firestoreOrdersApi.editOrder(uid ?? '', newOrder);
       isEdit = false;
       if (context.mounted) init(context, selectedIndex: index);
@@ -366,7 +367,7 @@ class OrdersCubit extends Cubit<OrdersState> {
       double price = 0;
       double discount = 0;
       double totalDiscount = 0;
-      final spentPoints = order.spentPoints;
+      final spentPoints = order.countedPoints;
       for (final ItemProduct product in order.items ?? []) {
         final totalPrice = (product.count ?? 0) * (product.product?.priceWithOptions ?? 0);
         final totalPriceDiscount = (product.count ?? 0) * (product.product?.price ?? 0);
@@ -385,9 +386,10 @@ class OrdersCubit extends Cubit<OrdersState> {
       orderTotalPrice = orderTotalPrice - (spentPoints ?? 0);
       discount = price - totalDiscount;
       if (deliveryType == 'Самовивіз') {
-        orderTotalPrice = orderTotalPrice * 0.9;
+        orderTotalPrice = orderTotalPrice;
         discount = price - orderTotalPrice;
       }
+
       order.price = double.parse(price.toStringAsFixed(2));
       order.totalPrice = double.parse(orderTotalPrice.toStringAsFixed(2));
       order.discount = double.parse(discount.toStringAsFixed(2));
