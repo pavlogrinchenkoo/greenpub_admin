@@ -122,11 +122,9 @@ class OrdersCubit extends Cubit<OrdersState> {
       final price = items?.fold(0.0, (previousValue, element) {
         return previousValue + (element.product?.price ?? 0);
       });
-
-      if (deliveryType == 'Курєром') {
-        print(price);
+      print(deliveryType);
+      if (deliveryType == 'delivery') {
         final points = (price ?? 0) * 0.05;
-        print(points);
         final priceInPoints = points.toInt();
         await firestoreApi.editPoints(user?.uid ?? '', priceInPoints);
       } else {
@@ -134,8 +132,8 @@ class OrdersCubit extends Cubit<OrdersState> {
         final priceInPoints = points.toInt() ?? 0;
         await firestoreApi.editPoints(user?.uid ?? '', priceInPoints);
       }
-      await firestoreApi.editPointsRemove(
-          user?.uid ?? '', order.countedPoints?? 0);
+      // await firestoreApi.editPointsRemove(
+      //     user?.uid ?? '', order.countedPoints?? 0);
     }
   }
 
